@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Dados/Dados.csproj" />
+  <Project Path="Dominio/Dominio.csproj" />
+  <Project Path="EstoqueMvp.Api/EstoqueMvp.Api.csproj" />
+  <Project Path="EstoqueMvp.Web/EstoqueMvp.Web.csproj" />
+  <Project Path="Servicos/Servicos.csproj" />
+</Solution>
