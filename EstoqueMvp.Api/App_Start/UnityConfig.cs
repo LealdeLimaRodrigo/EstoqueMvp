@@ -28,7 +28,11 @@ namespace EstoqueMvp.Api
 
             // Registrando os serviços
             container.RegisterType<IProdutoServico, ProdutoServico>();
+            container.RegisterType<IUsuarioServico, UsuarioServico>();
             container.RegisterType<ITipoMovimentacaoServico, TipoMovimentacaoServico>();
+            container.RegisterType<ISetorServico, SetorServico>();
+            container.RegisterType<IEstoqueSetorServico, EstoqueSetorServico>();
+            container.RegisterType<IMovimentacaoEstoqueServico, MovimentacaoEstoqueServico>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }

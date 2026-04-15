@@ -151,6 +151,10 @@
       <Project>{9E9E79B6-A44F-4856-A6BE-55B3EC4585A7}</Project>
       <Name>Dominio</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Servicos\Servicos.csproj">
+      <Project>{02487574-8371-473B-9882-DCC6B491D50C}</Project>
+      <Name>Servicos</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

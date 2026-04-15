@@ -22,8 +22,8 @@ namespace Dados.Repositorios
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                string sql = @"INSERT INTO MovimentacaoEstoque (ProdutoId, SetorId, Quantidade, TipoMovimentacaoId, UsuarioId, TransacaoId, Data)
-                    VALUES (@ProdutoId, @SetorId, @Quantidade, @TipoMovimentacaoId, @UsuarioId, @TransacaoId, @Data);
+                string sql = @"INSERT INTO MovimentacaoEstoque (ProdutoId, SetorId, Quantidade, TipoMovimentacaoId, UsuarioId, TransacaoId)
+                    VALUES (@ProdutoId, @SetorId, @Quantidade, @TipoMovimentacaoId, @UsuarioId, @TransacaoId);
                     SELECT CAST(SCOPE_IDENTITY() as int)";
                 return db.Query<int>(sql, movimentacaoEstoque).Single();
             }

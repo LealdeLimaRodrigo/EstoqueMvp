@@ -48,6 +48,15 @@ namespace Dados.Repositorios
             }
         }
 
+        public EstoqueSetor ObterPorProdutoIdESetorId(int produtoId, int setorId)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT Id, ProdutoId, SetorId, Quantidade FROM EstoqueSetor WHERE ProdutoId = @ProdutoId AND SetorId = @SetorId";
+                return db.Query<EstoqueSetor>(sql, new { ProdutoId = produtoId, SetorId = setorId }).FirstOrDefault();
+            }
+        }
+
         public IEnumerable<EstoqueSetor> ObterPorSetorId(int setorId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))

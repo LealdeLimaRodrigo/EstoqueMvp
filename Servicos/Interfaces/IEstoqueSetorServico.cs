@@ -1,9 +1,9 @@
 ﻿using Dominio.Entidades;
 using System.Collections.Generic;
 
-namespace Dominio.Interfaces
+namespace Servicos.Interfaces
 {
-    public interface IEstoqueSetorRepositorio
+    public interface IEstoqueSetorServico
     {
         IEnumerable<EstoqueSetor> ObterTodos();
         IEnumerable<EstoqueSetor> ObterPorSetorId(int setorId);
