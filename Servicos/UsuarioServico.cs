@@ -67,6 +67,25 @@ namespace Servicos
 
             usuario.Cpf = CpfValidacao.LimparCpf(usuario.Cpf);
 
+            var usuarioExistenteCpf = _usuarioRepositorio.ObterPorCpf(usuario.Cpf);
+            if (usuarioExistenteCpf != null && usuarioExistenteCpf.Id != usuario.Id)
+            {
+                throw new InvalidOperationException("Este CPF já está sendo utilizado por outro usuário.");
+            }
+
+            var usuarioAntigo = _usuarioRepositorio.ObterPorId(usuario.Id);
+            if (usuarioAntigo == null)
+                throw new KeyNotFoundException("Usuário não encontrado para atualização.");
+
+            if (!string.IsNullOrWhiteSpace(usuario.SenhaHash))
+            {
+                usuario.SenhaHash = GerarHashSenha(usuario.SenhaHash);
+            }
+            else
+            {
+                usuario.SenhaHash = usuarioAntigo.SenhaHash;
+            }
+
             _usuarioRepositorio.Atualizar(usuario);
         }
 
@@ -91,10 +110,10 @@ namespace Servicos
             var usuario = _usuarioRepositorio.ObterPorId(id);
 
             if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
+                throw new KeyNotFoundException("Usuário não encontrado.");
             
             if (!usuario.Ativo)
-                throw new Exception("Usuário já está inativo.");
+                throw new InvalidOperationException("Usuário já está inativo.");
 
             _usuarioRepositorio.Remover(id);
         }
@@ -104,10 +123,10 @@ namespace Servicos
             var usuario = _usuarioRepositorio.ObterPorId(id);
 
             if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
+                throw new KeyNotFoundException("Usuário não encontrado.");
 
             if (usuario.Ativo)
-                throw new Exception("Usuário já está ativo.");
+                throw new InvalidOperationException("Usuário já está ativo.");
 
             _usuarioRepositorio.Restaurar(id);
         }

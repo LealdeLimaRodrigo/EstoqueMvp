@@ -38,10 +38,10 @@ namespace Servicos
             var setor = _setorRepositorio.ObterPorId(id);
 
             if (setor == null)
-                throw new Exception("Setor não encontrado.");
+                throw new KeyNotFoundException("Setor não encontrado.");
             
             if (!setor.Ativo)
-                throw new Exception("Setor já está inativo.");
+                throw new InvalidOperationException("Setor já está inativo.");
 
             _setorRepositorio.Remover(id);
         }
@@ -51,10 +51,10 @@ namespace Servicos
             var setor = _setorRepositorio.ObterPorId(id);
 
             if (setor == null)
-                throw new Exception("Setor não encontrado.");
+                throw new KeyNotFoundException("Setor não encontrado.");
 
             if (setor.Ativo)
-                throw new Exception("Setor já está ativo.");
+                throw new InvalidOperationException("Setor já está ativo.");
 
             _setorRepositorio.Restaurar(id);
         }

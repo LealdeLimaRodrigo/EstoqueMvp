@@ -46,10 +46,10 @@ namespace Servicos
             var produto = _produtoRepositorio.ObterPorId(id);
 
             if (produto == null)
-                throw new Exception("Produto não encontrado.");
+                throw new KeyNotFoundException("Produto não encontrado.");
             
             if (!produto.Ativo)
-                throw new Exception("Produto já está inativo.");
+                throw new InvalidOperationException("Produto já está inativo.");
 
             _produtoRepositorio.Remover(id);
         }
@@ -59,10 +59,10 @@ namespace Servicos
             var produto = _produtoRepositorio.ObterPorId(id);
 
             if (produto == null)
-                throw new Exception("Produto não encontrado.");
+                throw new KeyNotFoundException("Produto não encontrado.");
 
             if (produto.Ativo)
-                throw new Exception("Produto já está ativo.");
+                throw new InvalidOperationException("Produto já está ativo.");
 
             _produtoRepositorio.Restaurar(id);
         }

@@ -1,5 +1,4 @@
-﻿using Servicos.Dtos;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Servicos.Validacoes
 {
@@ -16,8 +15,8 @@ namespace Servicos.Validacoes
                 return false;
 
             // Rejeita CPFs com todos os números iguais (ex: 111.111.111-11)
-            if (cpf.Distinct().Count() == 1) return false;
-;
+            if (cpf != "00000000000" && cpf.Distinct().Count() == 1) return false;
+            
             // Cálculo do 1º dígito
             int soma = 0;
             for (int i = 0; i < 9; i++)
