@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>9e9e79b6-a44f-4856-a6be-55b3ec4585a7</ProjectGuid>
+    <ProjectGuid>{9E9E79B6-A44F-4856-A6BE-55B3EC4585A7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dominio</RootNamespace>
@@ -31,24 +31,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Entidades\MovimentacaoEstoque.cs" />
+    <Compile Include="Entidades\EstoqueSetor.cs" />
+    <Compile Include="Entidades\TipoMovimentacao.cs" />
+    <Compile Include="Entidades\Setor.cs" />
+    <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Entidades\Produto.cs" />
+    <Compile Include="Interfaces\IMovimentacaoEstoqueRepositorio.cs" />
+    <Compile Include="Interfaces\IEstoqueSetorRepositorio.cs" />
+    <Compile Include="Interfaces\ITipoMovimentacaoRepositorio.cs" />
+    <Compile Include="Interfaces\ISetorRepositorio.cs" />
+    <Compile Include="Interfaces\IUsuarioRepositorio.cs" />
+    <Compile Include="Interfaces\IProdutoRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>
