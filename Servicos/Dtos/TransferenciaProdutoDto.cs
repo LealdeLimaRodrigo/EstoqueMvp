@@ -1,5 +1,9 @@
 ﻿namespace Servicos.Dtos
 {
+    /// <summary>
+    /// DTO para transferência de produto entre setores.
+    /// O UsuarioId é preenchido automaticamente a partir do token JWT no controller.
+    /// </summary>
     public class TransferenciaProdutoDto
     {
         public int ProdutoId { get; set; }

@@ -3,6 +3,9 @@ using FluentValidation;
 
 namespace Servicos.Validacoes
 {
+    /// <summary>
+    /// Regras de validação para o registro de estoque por setor.
+    /// </summary>
     public class EstoqueSetorValidator : AbstractValidator<EstoqueSetor>
     {
         public EstoqueSetorValidator() 

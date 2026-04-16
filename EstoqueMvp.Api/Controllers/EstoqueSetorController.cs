@@ -1,8 +1,13 @@
 ﻿using Servicos.Interfaces;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace EstoqueMvp.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável pela consulta do saldo de estoque por setor.
+    /// Permite visualizar a quantidade de cada produto em cada setor.
+    /// </summary>
     [Authorize]
     [RoutePrefix("api/estoque-setor")]
     public class EstoqueSetorController : ApiController
@@ -14,36 +19,47 @@ namespace EstoqueMvp.Api.Controllers
             _estoqueSetorServico = estoqueSetorServico;
         }
 
-        // GET: Setor
+        /// <summary>
+        /// Retorna todos os registros de estoque por setor.
+        /// </summary>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult ObterTodos()
+        public async Task<IHttpActionResult> ObterTodos()
         {
-            var estoqueSetores = _estoqueSetorServico.ObterTodos();
+            var estoqueSetores = await _estoqueSetorServico.ObterTodos();
             return Ok(estoqueSetores);
         }
 
+        /// <summary>
+        /// Retorna o estoque de todos os produtos de um setor específico.
+        /// </summary>
         [HttpGet]
         [Route("setor/{setorId:int}")]
-        public IHttpActionResult ObterPorSetorId(int setorId)
+        public async Task<IHttpActionResult> ObterPorSetorId(int setorId)
         {
-            var estoqueSetores = _estoqueSetorServico.ObterPorSetorId(setorId);            
+            var estoqueSetores = await _estoqueSetorServico.ObterPorSetorId(setorId);
             return Ok(estoqueSetores);
         }
 
+        /// <summary>
+        /// Retorna o estoque de um produto específico em todos os setores.
+        /// </summary>
         [HttpGet]
         [Route("produto/{produtoId:int}")]
-        public IHttpActionResult ObterPorProdutoId(int produtoId)
+        public async Task<IHttpActionResult> ObterPorProdutoId(int produtoId)
         {
-            var estoqueSetores = _estoqueSetorServico.ObterPorProdutoId(produtoId);            
+            var estoqueSetores = await _estoqueSetorServico.ObterPorProdutoId(produtoId);
             return Ok(estoqueSetores);
         }
 
+        /// <summary>
+        /// Retorna o saldo de um produto em um setor específico.
+        /// </summary>
         [HttpGet]
         [Route("produto/{produtoId:int}/setor/{setorId:int}")]
-        public IHttpActionResult ObterPorProdutoIdESetorId(int produtoId, int setorId)
+        public async Task<IHttpActionResult> ObterPorProdutoIdESetorId(int produtoId, int setorId)
         {
-            var estoqueSetor = _estoqueSetorServico.ObterPorProdutoIdESetorId(produtoId, setorId);
+            var estoqueSetor = await _estoqueSetorServico.ObterPorProdutoIdESetorId(produtoId, setorId);
             if (estoqueSetor == null)
                 return NotFound();
 

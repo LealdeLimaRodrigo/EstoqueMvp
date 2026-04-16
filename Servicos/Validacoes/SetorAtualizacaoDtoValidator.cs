@@ -1,12 +1,18 @@
-﻿using Dominio.Entidades;
 using FluentValidation;
+using Servicos.Dtos;
 
 namespace Servicos.Validacoes
 {
-    public class SetorValidator : AbstractValidator<Setor>
+    /// <summary>
+    /// Regras de validação para atualização de setor. Inclui validação do ID.
+    /// </summary>
+    public class SetorAtualizacaoDtoValidator : AbstractValidator<SetorAtualizacaoDto>
     {
-        public SetorValidator() 
+        public SetorAtualizacaoDtoValidator()
         {
+            RuleFor(p => p.Id)
+                .GreaterThan(0).WithMessage("O ID do setor deve ser maior que zero.");
+
             RuleFor(p => p.Nome)
                 .NotEmpty().WithMessage("O nome do setor é obrigatório.")
                 .MaximumLength(100).WithMessage("O nome do setor deve ter no máximo 100 caracteres.");

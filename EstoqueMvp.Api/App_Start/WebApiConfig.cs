@@ -4,6 +4,10 @@ using System.Web.Http.Cors;
 
 namespace EstoqueMvp.Api
 {
+    /// <summary>
+    /// Configuração central da Web API: CORS, filtros globais e rotas.
+    /// CORS está liberado (*) apenas por ser um MVP. Em produção, restringir origens permitidas.
+    /// </summary>
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)

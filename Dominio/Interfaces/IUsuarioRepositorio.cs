@@ -1,17 +1,36 @@
 ﻿using Dominio.Entidades;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dominio.Interfaces
 {
+    /// <summary>
+    /// Contrato de acesso a dados para a entidade Usuário.
+    /// </summary>
     public interface IUsuarioRepositorio
     {
-        IEnumerable<Usuario> ObterTodos();
-        IEnumerable<Usuario> ObterTodosInativos();
-        Usuario ObterPorId(int id);
-        Usuario ObterPorCpf(string cpf);
-        int Adicionar(Usuario usuario);
-        void Atualizar(Usuario usuario);
-        void Remover(int id);
-        void Restaurar(int id);
+        Task<IEnumerable<Usuario>> ObterTodos();
+        Task<IEnumerable<Usuario>> ObterTodosPaginado(int offset, int tamanhoPagina);
+        Task<int> ContarTodosAtivos();
+        Task<IEnumerable<Usuario>> ObterTodosInativos();
+        Task<Usuario> ObterPorId(int id);
+        Task<Usuario> ObterPorCpf(string cpf);
+
+        /// <summary>
+        /// Busca o usuário pelo CPF incluindo o SenhaHash.
+        /// Utilizado exclusivamente no fluxo de login para verificação de credenciais.
+        /// </summary>
+        Task<Usuario> ObterPorCpfComSenha(string cpf);
+
+        /// <summary>
+        /// Busca o usuário pelo ID incluindo o SenhaHash.
+        /// Utilizado exclusivamente no fluxo de atualização para preservar a senha existente.
+        /// </summary>
+        Task<Usuario> ObterPorIdComSenha(int id);
+        Task<IEnumerable<Usuario>> ObterPorNome(string nome);
+        Task<int> Adicionar(Usuario usuario);
+        Task Atualizar(Usuario usuario);
+        Task Remover(int id);
+        Task Restaurar(int id);
     }
 }

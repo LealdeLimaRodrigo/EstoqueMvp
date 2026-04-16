@@ -10,6 +10,10 @@ using System.Text;
 
 namespace EstoqueMvp.Api
 {
+    /// <summary>
+    /// Configuração OWIN para autenticação JWT Bearer.
+    /// Valida tokens enviados no header Authorization em todas as requisições protegidas.
+    /// </summary>
     public class Startup
     {
         public void Configuration(IAppBuilder app)

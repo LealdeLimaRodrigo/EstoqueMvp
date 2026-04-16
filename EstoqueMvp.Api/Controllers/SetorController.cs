@@ -1,9 +1,14 @@
-﻿using Dominio.Entidades;
+﻿using Servicos.Dtos;
 using Servicos.Interfaces;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace EstoqueMvp.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável pelo CRUD de setores/departamentos.
+    /// Cada setor possui seu próprio estoque de produtos.
+    /// </summary>
     [Authorize]
     [RoutePrefix("api/setor")]
     public class SetorController : ApiController
@@ -15,63 +20,101 @@ namespace EstoqueMvp.Api.Controllers
             _setorServico = setorServico;
         }
 
-        // GET: Setor
+        /// <summary>
+        /// Retorna todos os setores ativos. Suporta paginação via query string.
+        /// </summary>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult ObterTodos()
+        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null)
         {
-            var setores = _setorServico.ObterTodos();
+            if (pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
+            {
+                var resultado = await _setorServico.ObterTodosPaginado(pagina.Value, tamanhoPagina.Value);
+                return Ok(resultado);
+            }
+
+            var setores = await _setorServico.ObterTodos();
             return Ok(setores);
         }
 
+        /// <summary>
+        /// Retorna todos os setores inativos (soft deleted).
+        /// </summary>
         [HttpGet]
         [Route("inativos")]
-        public IHttpActionResult ObterInativos()
+        public async Task<IHttpActionResult> ObterInativos()
         {
-            var setoresInativos = _setorServico.ObterTodosInativos();
+            var setoresInativos = await _setorServico.ObterTodosInativos();
             return Ok(setoresInativos);
         }
 
+        /// <summary>
+        /// Retorna um setor específico pelo seu ID.
+        /// </summary>
         [HttpGet]
         [Route("{id:int}")]
-        public IHttpActionResult ObterPorId(int id)
+        public async Task<IHttpActionResult> ObterPorId(int id)
         {
-            var setor = _setorServico.ObterPorId(id);
+            var setor = await _setorServico.ObterPorId(id);
             if (setor == null)
                 return NotFound();
 
             return Ok(setor);
         }
 
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult Adicionar(Setor setor)
+        /// <summary>
+        /// Busca setores por nome (busca parcial com LIKE).
+        /// </summary>
+        [HttpGet]
+        [Route("nome/{nome}")]
+        public async Task<IHttpActionResult> ObterPorNome(string nome)
         {
-            int id = _setorServico.Adicionar(setor);
-            return Ok(new { Mensagem = "Setor cadastrado com sucesso!", SetorId = id });
+            var setores = await _setorServico.ObterPorNome(nome);
+            return Ok(setores);
         }
 
-        [HttpPut]
+        /// <summary>
+        /// Cadastra um novo setor no sistema.
+        /// </summary>
+        [HttpPost]
         [Route("")]
-        public IHttpActionResult Atualizar([FromBody] Setor setor)
+        public async Task<IHttpActionResult> Adicionar([FromBody] SetorCadastroDto dto)
         {
-            _setorServico.Atualizar(setor);
+            int id = await _setorServico.Adicionar(dto);
+            return Created($"api/setor/{id}", new { Mensagem = "Setor cadastrado com sucesso!", SetorId = id });
+        }
+
+        /// <summary>
+        /// Atualiza os dados de um setor existente.
+        /// </summary>
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> Atualizar(int id, [FromBody] SetorAtualizacaoDto dto)
+        {
+            dto.Id = id;
+            await _setorServico.Atualizar(dto);
             return Ok(new { Mensagem = "Setor atualizado com sucesso!" });
         }
 
+        /// <summary>
+        /// Inativa um setor (soft delete).
+        /// </summary>
         [HttpDelete]
         [Route("{id:int}")]
-        public IHttpActionResult Remover(int id)
+        public async Task<IHttpActionResult> Remover(int id)
         {
-            _setorServico.Remover(id);
+            await _setorServico.Remover(id);
             return Ok(new { Mensagem = "Setor inativado com sucesso!" });
         }
 
+        /// <summary>
+        /// Restaura um setor previamente inativado.
+        /// </summary>
         [HttpPatch]
         [Route("restaurar/{id:int}")]
-        public IHttpActionResult Restaurar(int id)
+        public async Task<IHttpActionResult> Restaurar(int id)
         {
-            _setorServico.Restaurar(id);
+            await _setorServico.Restaurar(id);
             return Ok(new { Mensagem = "Setor restaurado com sucesso!" });
         }
     }

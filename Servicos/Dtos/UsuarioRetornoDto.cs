@@ -1,5 +1,8 @@
 ﻿namespace Servicos.Dtos
 {
+    /// <summary>
+    /// DTO de retorno do usuário após autenticação. Não inclui dados sensíveis.
+    /// </summary>
     public class UsuarioRetornoDto
     {
         public int Id { get; set; }

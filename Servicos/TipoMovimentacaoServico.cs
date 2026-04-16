@@ -2,9 +2,14 @@
 using Dominio.Interfaces;
 using Servicos.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Servicos
 {
+    /// <summary>
+    /// Serviço de consulta dos tipos de movimentação.
+    /// Os tipos são fixos e definidos na carga inicial do banco de dados.
+    /// </summary>
     public class TipoMovimentacaoServico : ITipoMovimentacaoServico
     {
         private readonly ITipoMovimentacaoRepositorio _tipoMovimentacaoRepositorio;
@@ -14,8 +19,8 @@ namespace Servicos
             _tipoMovimentacaoRepositorio = tipoMovimentacaoRepositorio;
         }
 
-        public TipoMovimentacao ObterPorId(int id) => _tipoMovimentacaoRepositorio.ObterPorId(id);
+        public async Task<TipoMovimentacao> ObterPorId(int id) => await _tipoMovimentacaoRepositorio.ObterPorId(id);
 
-        public IEnumerable<TipoMovimentacao> ObterTodos() => _tipoMovimentacaoRepositorio.ObterTodos();
+        public async Task<IEnumerable<TipoMovimentacao>> ObterTodos() => await _tipoMovimentacaoRepositorio.ObterTodos();
     }
 }

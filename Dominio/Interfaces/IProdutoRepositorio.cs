@@ -1,17 +1,25 @@
 ﻿using Dominio.Entidades;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dominio.Interfaces
 {
+    /// <summary>
+    /// Contrato de acesso a dados para a entidade Produto.
+    /// Definido na camada de domínio para garantir o Dependency Inversion Principle.
+    /// </summary>
     public interface IProdutoRepositorio
     {
-        IEnumerable<Produto> ObterTodos();
-        IEnumerable<Produto> ObterTodosInativos();
-        Produto ObterPorId(int id);
-        Produto ObterPorSku(string sku);
-        int Adicionar(Produto produto);
-        void Atualizar(Produto produto);
-        void Remover(int id);
-        void Restaurar(int id);
+        Task<IEnumerable<Produto>> ObterTodos();
+        Task<IEnumerable<Produto>> ObterTodosPaginado(int offset, int tamanhoPagina);
+        Task<int> ContarTodosAtivos();
+        Task<IEnumerable<Produto>> ObterTodosInativos();
+        Task<Produto> ObterPorId(int id);
+        Task<Produto> ObterPorSku(string sku);
+        Task<IEnumerable<Produto>> ObterPorNome(string nome);
+        Task<int> Adicionar(Produto produto);
+        Task Atualizar(Produto produto);
+        Task Remover(int id);
+        Task Restaurar(int id);
     }
 }

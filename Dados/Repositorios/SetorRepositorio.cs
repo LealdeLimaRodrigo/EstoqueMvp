@@ -5,9 +5,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dados.Repositorios
 {
+    /// <summary>
+    /// Repositório de acesso a dados para a entidade Setor.
+    /// Suporta soft delete e paginação server-side.
+    /// </summary>
     public class SetorRepositorio : ISetorRepositorio
     {
         private readonly string _connectionString;
@@ -17,79 +22,100 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
-        public int Adicionar(Setor setor)
+        public async Task<int> Adicionar(Setor setor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"INSERT INTO Setor (Nome, Descricao)
                     VALUES (@Nome, @Descricao);
                     SELECT CAST(SCOPE_IDENTITY() as int)";
-                return db.Query<int>(sql, setor).Single();
+                var result = await db.QueryAsync<int>(sql, setor);
+                return result.Single();
             }
         }
 
-        public void Atualizar(Setor setor)
+        public async Task Atualizar(Setor setor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"UPDATE Setor
                     SET Nome = @Nome, Descricao = @Descricao, Ativo = @Ativo
                     WHERE Id = @Id";
-                db.Execute(sql, setor);
+                await db.ExecuteAsync(sql, setor);
             }
         }
 
-        public Setor ObterPorId(int id)
+        public async Task<Setor> ObterPorId(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Id = @Id";
-                return db.Query<Setor>(sql, new { Id = id }).SingleOrDefault();
+                var result = await db.QueryAsync<Setor>(sql, new { Id = id });
+                return result.SingleOrDefault();
             }
         }
 
-        public Setor ObterPorNome(string nome)
+        public async Task<IEnumerable<Setor>> ObterPorNome(string nome)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Nome = @Nome AND Ativo = 1";
-                return db.Query<Setor>(sql, new { Nome = nome }).SingleOrDefault();
+                string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Nome LIKE @Nome AND Ativo = 1";
+                return (await db.QueryAsync<Setor>(sql, new { Nome = $"%{nome}%" })).ToList();
             }
         }
 
-        public IEnumerable<Setor> ObterTodos()
+        public async Task<IEnumerable<Setor>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Ativo = 1";
-                return db.Query<Setor>(sql).ToList();
+                return (await db.QueryAsync<Setor>(sql)).ToList();
             }
         }
 
-        public IEnumerable<Setor> ObterTodosInativos()
+        public async Task<IEnumerable<Setor>> ObterTodosPaginado(int offset, int tamanhoPagina)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Ativo = 1
+                    ORDER BY Id OFFSET @Offset ROWS FETCH NEXT @TamanhoPagina ROWS ONLY";
+                return (await db.QueryAsync<Setor>(sql, new { Offset = offset, TamanhoPagina = tamanhoPagina })).ToList();
+            }
+        }
+
+        public async Task<int> ContarTodosAtivos()
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT COUNT(*) FROM Setor WHERE Ativo = 1";
+                return await db.ExecuteScalarAsync<int>(sql);
+            }
+        }
+
+        public async Task<IEnumerable<Setor>> ObterTodosInativos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor WHERE Ativo = 0";
-                return db.Query<Setor>(sql).ToList();
+                return (await db.QueryAsync<Setor>(sql)).ToList();
             }
         }
 
-        public void Remover(int id)
+        public async Task Remover(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"UPDATE Setor SET Ativo = 0 WHERE Id = @Id";
-                db.Execute(sql, new { Id = id });
+                await db.ExecuteAsync(sql, new { Id = id });
             }
         }
 
-        public void Restaurar(int id)
+        public async Task Restaurar(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"UPDATE Setor SET Ativo = 1 WHERE Id = @Id";
-                db.Execute(sql, new { Id = id });
+                await db.ExecuteAsync(sql, new { Id = id });
             }
 
         }

@@ -1,11 +1,15 @@
-﻿using Dominio.Entidades;
 using FluentValidation;
+using Servicos.Dtos;
 
 namespace Servicos.Validacoes
 {
-    public class ProdutoValidator : AbstractValidator<Produto>
+    /// <summary>
+    /// Regras de validação para cadastro de produto.
+    /// Garante que nome não esteja vazio, descrição dentro do limite e preço positivo.
+    /// </summary>
+    public class ProdutoCadastroDtoValidator : AbstractValidator<ProdutoCadastroDto>
     {
-        public ProdutoValidator() 
+        public ProdutoCadastroDtoValidator()
         {
             RuleFor(p => p.Nome)
                 .NotEmpty().WithMessage("O nome do produto é obrigatório.")

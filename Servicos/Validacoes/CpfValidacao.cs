@@ -2,6 +2,10 @@
 
 namespace Servicos.Validacoes
 {
+    /// <summary>
+    /// Classe utilitária para validação e limpeza de CPF.
+    /// Implementa o algoritmo oficial de verificação dos dígitos verificadores.
+    /// </summary>
     public static class CpfValidacao
     {
         public static bool ValidarCpf(string cpf)

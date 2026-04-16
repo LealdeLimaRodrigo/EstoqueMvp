@@ -1,62 +1,98 @@
-﻿using Dominio.Entidades;
+using Dominio.Entidades;
 using Dominio.Interfaces;
 using FluentValidation;
+using Servicos.Dtos;
 using Servicos.Interfaces;
 using Servicos.Validacoes;
+using Servicos.Mapeamentos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Servicos
 {
+    /// <summary>
+    /// Serviço responsável pelas regras de negócio de Produto.
+    /// Gerencia o cadastro com geração automática de SKU, atualização e soft delete.
+    /// </summary>
     public class ProdutoServico : IProdutoServico
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly IEstoqueSetorRepositorio _estoqueSetorRepositorio;
 
-        public ProdutoServico(IProdutoRepositorio produtoRepositorio)
+        private readonly IValidator<ProdutoCadastroDto> _cadastroValidator;
+        private readonly IValidator<ProdutoAtualizacaoDto> _atualizacaoValidator;
+
+        public ProdutoServico(IProdutoRepositorio produtoRepositorio, IEstoqueSetorRepositorio estoqueSetorRepositorio, IValidator<ProdutoCadastroDto> cadastroValidator, IValidator<ProdutoAtualizacaoDto> atualizacaoValidator)
         {
             _produtoRepositorio = produtoRepositorio;
+            _estoqueSetorRepositorio = estoqueSetorRepositorio;
+            _cadastroValidator = cadastroValidator;
+            _atualizacaoValidator = atualizacaoValidator;
         }
 
-        public int Adicionar(Produto produto)
+        /// <summary>
+        /// Cadastra um novo produto com SKU gerado automaticamente.
+        /// O SKU é único e imutável após a criação.
+        /// </summary>
+        public async Task<int> Adicionar(ProdutoCadastroDto dto)
         {
-            var validator = new ProdutoValidator();
-            validator.ValidateAndThrow(produto);
+            _cadastroValidator.ValidateAndThrow(dto);
 
-            produto.Sku = GerarSkuUnico();
+            var produto = dto.ToEntity(GerarSkuUnico());
 
-            return _produtoRepositorio.Adicionar(produto);
+            return await _produtoRepositorio.Adicionar(produto);
         }
 
+        /// <summary>
+        /// Gera um código SKU único baseado em GUID.
+        /// Formato: PRD-{12 caracteres hex} — garantia de unicidade sem consulta ao banco.
+        /// </summary>
         private string GerarSkuUnico()
         {
             string hashCurto = Guid.NewGuid().ToString("N").Substring(0, 12).ToUpper();            
             return $"PRD-{hashCurto}";
         }
 
-        public void Atualizar(Produto produto)
+        /// <summary>
+        /// Atualiza os dados de um produto existente. O SKU não pode ser alterado.
+        /// </summary>
+        public async Task Atualizar(ProdutoAtualizacaoDto dto)
         {
-            var validator = new ProdutoValidator();
-            validator.ValidateAndThrow(produto);
+            _atualizacaoValidator.ValidateAndThrow(dto);
 
-            _produtoRepositorio.Atualizar(produto);
+            var produtoExistente = await _produtoRepositorio.ObterPorId(dto.Id);
+            if (produtoExistente == null)
+                throw new KeyNotFoundException("Produto não encontrado para atualização.");
+
+            produtoExistente.AplicarAtualizacao(dto);
+
+            await _produtoRepositorio.Atualizar(produtoExistente);
         }
 
-        public void Remover(int id)
+        /// <summary>
+        /// Realiza o soft delete do produto (marca como inativo).
+        /// </summary>
+        public async Task Remover(int id)
         {
-            var produto = _produtoRepositorio.ObterPorId(id);
+            var produto = await _produtoRepositorio.ObterPorId(id);
 
             if (produto == null)
                 throw new KeyNotFoundException("Produto não encontrado.");
-            
+
             if (!produto.Ativo)
                 throw new InvalidOperationException("Produto já está inativo.");
 
-            _produtoRepositorio.Remover(id);
+            await _produtoRepositorio.Remover(id);
         }
 
-        public void Restaurar(int id)
+        /// <summary>
+        /// Restaura um produto previamente inativado.
+        /// </summary>
+        public async Task Restaurar(int id)
         {
-            var produto = _produtoRepositorio.ObterPorId(id);
+            var produto = await _produtoRepositorio.ObterPorId(id);
 
             if (produto == null)
                 throw new KeyNotFoundException("Produto não encontrado.");
@@ -64,16 +100,76 @@ namespace Servicos
             if (produto.Ativo)
                 throw new InvalidOperationException("Produto já está ativo.");
 
-            _produtoRepositorio.Restaurar(id);
+            await _produtoRepositorio.Restaurar(id);
         }
 
-        public Produto ObterPorId(int id) => _produtoRepositorio.ObterPorId(id);
+        public async Task<ProdutoRetornoDto> ObterPorId(int id)
+        {
+            var produto = await _produtoRepositorio.ObterPorId(id);
+            return await MapearParaDto(produto);
+        }
 
-        public Produto ObterPorSku(string sku) => _produtoRepositorio.ObterPorSku(sku);
+        public async Task<ProdutoRetornoDto> ObterPorSku(string sku)
+        {
+            var produto = await _produtoRepositorio.ObterPorSku(sku);
+            return await MapearParaDto(produto);
+        }
 
-        public IEnumerable<Produto> ObterTodos() => _produtoRepositorio.ObterTodos();
+        public async Task<IEnumerable<ProdutoRetornoDto>> ObterPorNome(string nome)
+        {
+            var produtos = await _produtoRepositorio.ObterPorNome(nome);
+            return await MapearListaParaDto(produtos);
+        }
 
-        public IEnumerable<Produto> ObterTodosInativos() => _produtoRepositorio.ObterTodosInativos();
+        public async Task<IEnumerable<ProdutoRetornoDto>> ObterTodos()
+        {
+            var produtos = await _produtoRepositorio.ObterTodos();
+            return await MapearListaParaDto(produtos);
+        }
 
+        /// <summary>
+        /// Retorna produtos com paginação. Calcula o offset com base na página solicitada.
+        /// </summary>
+        public async Task<PaginacaoResultadoDto<ProdutoRetornoDto>> ObterTodosPaginado(int pagina, int tamanhoPagina)
+        {
+            int offset = (pagina - 1) * tamanhoPagina;
+            var itens = await _produtoRepositorio.ObterTodosPaginado(offset, tamanhoPagina);
+            var total = await _produtoRepositorio.ContarTodosAtivos();
+
+            var listDto = await MapearListaParaDto(itens);
+
+            return listDto.ToPaginacaoDto<Produto, ProdutoRetornoDto>(total, pagina, tamanhoPagina);
+        }
+
+        public async Task<IEnumerable<ProdutoRetornoDto>> ObterTodosInativos()
+        {
+            var produtos = await _produtoRepositorio.ObterTodosInativos();
+            return await MapearListaParaDto(produtos);
+        }
+
+        /// <summary>
+        /// Mapeia a entidade de domínio para o DTO de retorno, incluindo a quantidade total em estoque.
+        /// A quantidade é calculada via SUM no banco (soma de todos os setores).
+        /// </summary>
+        private async Task<ProdutoRetornoDto> MapearParaDto(Produto produto)
+        {
+            if (produto == null) return null;
+            var qtd = await _estoqueSetorRepositorio.ObterQuantidadeTotalPorProdutoId(produto.Id);
+            return produto.ToRetornoDto(qtd);
+        }
+
+        /// <summary>
+        /// Mapeia uma lista de entidades para DTOs de retorno.
+        /// </summary>
+        private async Task<IEnumerable<ProdutoRetornoDto>> MapearListaParaDto(IEnumerable<Produto> produtos)
+        {
+            var lista = new List<ProdutoRetornoDto>();
+            foreach (var produto in produtos)
+            {
+                lista.Add(await MapearParaDto(produto));
+            }
+            return lista;
+        }
     }
 }
+

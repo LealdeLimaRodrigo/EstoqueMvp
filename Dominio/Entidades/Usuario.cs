@@ -1,5 +1,9 @@
 ﻿namespace Dominio.Entidades
 {
+    /// <summary>
+    /// Entidade de domínio que representa um usuário do sistema.
+    /// A serialização e proteção de campos sensíveis é responsabilidade da camada de API (DTOs).
+    /// </summary>
     public class Usuario
     {
         public int Id { get; set; }

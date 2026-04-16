@@ -1,9 +1,14 @@
-﻿using Dominio.Entidades;
+﻿using Servicos.Dtos;
 using Servicos.Interfaces;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace EstoqueMvp.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável pelo CRUD completo de produtos.
+    /// Utiliza soft delete (Ativo/Inativo) em vez de exclusão física.
+    /// </summary>
     [Authorize]
     [RoutePrefix("api/produto")]
     public class ProdutoController : ApiController
@@ -15,74 +20,116 @@ namespace EstoqueMvp.Api.Controllers
             _produtoServico = produtoServico;
         }
 
-        // GET: Produto
+        /// <summary>
+        /// Retorna todos os produtos ativos. Suporta paginação via query string.
+        /// </summary>
         [HttpGet]
         [Route("")]
-        public IHttpActionResult ObterTodos()
+        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null)
         {
-            var produtos = _produtoServico.ObterTodos();
+            if (pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
+            {
+                var resultado = await _produtoServico.ObterTodosPaginado(pagina.Value, tamanhoPagina.Value);
+                return Ok(resultado);
+            }
+
+            var produtos = await _produtoServico.ObterTodos();
             return Ok(produtos);
         }
 
+        /// <summary>
+        /// Retorna todos os produtos inativos (soft deleted).
+        /// </summary>
         [HttpGet]
         [Route("inativos")]
-        public IHttpActionResult ObterInativos()
+        public async Task<IHttpActionResult> ObterInativos()
         {
-            var produtosInativos = _produtoServico.ObterTodosInativos();
+            var produtosInativos = await _produtoServico.ObterTodosInativos();
             return Ok(produtosInativos);
         }
 
+        /// <summary>
+        /// Retorna um produto específico pelo seu ID.
+        /// </summary>
         [HttpGet]
         [Route("{id:int}")]
-        public IHttpActionResult ObterPorId(int id)
+        public async Task<IHttpActionResult> ObterPorId(int id)
         {
-            var produto = _produtoServico.ObterPorId(id);
+            var produto = await _produtoServico.ObterPorId(id);
             if (produto == null)
                 return NotFound();
 
             return Ok(produto);
         }
 
+        /// <summary>
+        /// Retorna um produto pelo seu código SKU único.
+        /// </summary>
         [HttpGet]
         [Route("sku/{sku}")]
-        public IHttpActionResult ObterPorSku(string sku)
+        public async Task<IHttpActionResult> ObterPorSku(string sku)
         {
-            var produto = _produtoServico.ObterPorSku(sku);
+            var produto = await _produtoServico.ObterPorSku(sku);
             if (produto == null)
                 return NotFound();
 
             return Ok(produto);
         }
 
-        [HttpPost]
-        [Route("")]
-        public IHttpActionResult Adicionar(Produto produto)
+        /// <summary>
+        /// Busca produtos por nome (busca parcial com LIKE).
+        /// </summary>
+        [HttpGet]
+        [Route("nome/{nome}")]
+        public async Task<IHttpActionResult> ObterPorNome(string nome)
         {
-            int id = _produtoServico.Adicionar(produto);
-            return Ok(new { Mensagem = "Produto cadastrado com sucesso!", ProdutoId = id });
+            var produtos = await _produtoServico.ObterPorNome(nome);
+            return Ok(produtos);
         }
 
-        [HttpPut]
+        /// <summary>
+        /// Cadastra um novo produto com geração automática de SKU.
+        /// </summary>
+        [HttpPost]
         [Route("")]
-        public IHttpActionResult Atualizar([FromBody] Produto produto)
+        public async Task<IHttpActionResult> Adicionar([FromBody] ProdutoCadastroDto dto)
         {
-            _produtoServico.Atualizar(produto);
+            int id = await _produtoServico.Adicionar(dto);
+            return Created($"api/produto/{id}", new { Mensagem = "Produto cadastrado com sucesso!", ProdutoId = id });
+        }
+
+        /// <summary>
+        /// Atualiza os dados de um produto existente. O SKU não é alterável.
+        /// </summary>
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> Atualizar(int id, [FromBody] ProdutoAtualizacaoDto dto)
+        {
+            // Garante que o ID da rota prevalece sobre o do body
+            dto.Id = id;
+            await _produtoServico.Atualizar(dto);
             return Ok(new { Mensagem = "Produto atualizado com sucesso!" });
         }
 
+        /// <summary>
+        /// Inativa um produto (soft delete). O produto permanece no banco para histórico.
+        /// </summary>
         [HttpDelete]
         [Route("{id:int}")]
-        public IHttpActionResult Remover(int id)
+        public async Task<IHttpActionResult> Remover(int id)
         {
-            _produtoServico.Remover(id);
+            await _produtoServico.Remover(id);
             return Ok(new { Mensagem = "Produto inativado com sucesso!" });
         }
 
+        /// <summary>
+        /// Restaura um produto previamente inativado.
+        /// </summary>
         [HttpPatch]
         [Route("restaurar/{id:int}")]
-        public IHttpActionResult Restaurar(int id)
+        public async Task<IHttpActionResult> Restaurar(int id)
         {
-            _produtoServico.Restaurar(id);
+            await _produtoServico.Restaurar(id);
             return Ok(new { Mensagem = "Produto restaurado com sucesso!" });
         }
     }

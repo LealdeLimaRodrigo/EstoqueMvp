@@ -3,6 +3,9 @@ using Servicos.Dtos;
 
 namespace Servicos.Validacoes
 {
+    /// <summary>
+    /// Regras de validação para o login. Exige CPF válido e senha com mínimo de 6 caracteres.
+    /// </summary>
     public class LoginDtoValidator : AbstractValidator<LoginDto>
     {
         public LoginDtoValidator() 

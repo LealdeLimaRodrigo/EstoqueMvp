@@ -8,10 +8,18 @@ using System.Text;
 
 namespace EstoqueMvp.Api.Security
 {
+    /// <summary>
+    /// Serviço responsável pela geração de tokens JWT para autenticação.
+    /// A chave secreta é mantida privada para evitar exposição acidental.
+    /// </summary>
     public static class TokenService
     {
-        public static readonly string ChaveSecreta = ConfigurationManager.AppSettings["JwtSecretKey"];
+        private static readonly string ChaveSecreta = ConfigurationManager.AppSettings["JwtSecretKey"];
 
+        /// <summary>
+        /// Gera um token JWT com os claims do usuário autenticado.
+        /// O claim NameIdentifier é utilizado pelos controllers para identificar o usuário da requisição.
+        /// </summary>
         public static string GerarToken(UsuarioRetornoDto usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

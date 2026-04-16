@@ -2,6 +2,10 @@
 
 namespace Dominio.Entidades
 {
+    /// <summary>
+    /// Entidade de domínio que representa um registro de movimentação de estoque.
+    /// O TransacaoId agrupa movimentações relacionadas (ex: débito e crédito de uma transferência).
+    /// </summary>
     public class MovimentacaoEstoque
     {
         public int Id { get; set; }

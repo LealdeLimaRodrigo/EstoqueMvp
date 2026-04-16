@@ -1,43 +1,50 @@
-﻿using Dominio.Entidades;
+using Dominio.Entidades;
 using Dominio.Interfaces;
 using FluentValidation;
 using Servicos.Interfaces;
 using Servicos.Validacoes;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Servicos
 {
+    /// <summary>
+    /// Serviço responsável pela consulta e manutenção do saldo de estoque por setor.
+    /// As operações de crédito e débito são realizadas pelo MovimentacaoEstoqueServico.
+    /// </summary>
     public class EstoqueSetorServico : IEstoqueSetorServico
     {
         private readonly IEstoqueSetorRepositorio _estoqueSetorRepositorio;
 
-        public EstoqueSetorServico(IEstoqueSetorRepositorio estoqueSetorRepositorio)
+        private readonly IValidator<EstoqueSetor> _validator;
+
+        public EstoqueSetorServico(IEstoqueSetorRepositorio estoqueSetorRepositorio, IValidator<EstoqueSetor> validator)
         {
             _estoqueSetorRepositorio = estoqueSetorRepositorio;
+            _validator = validator;
         }
 
-        public int Adicionar(EstoqueSetor estoqueSetor)
+        public async Task<int> Adicionar(EstoqueSetor estoqueSetor)
         {
-            var validator = new EstoqueSetorValidator();
-            validator.ValidateAndThrow(estoqueSetor);
+            _validator.ValidateAndThrow(estoqueSetor);
 
-            return _estoqueSetorRepositorio.Adicionar(estoqueSetor);
+            return await _estoqueSetorRepositorio.Adicionar(estoqueSetor);
         }
 
-        public void Atualizar(EstoqueSetor estoqueSetor)
+        public async Task Atualizar(EstoqueSetor estoqueSetor)
         {
-            var validator = new EstoqueSetorValidator();
-            validator.ValidateAndThrow(estoqueSetor);
+            _validator.ValidateAndThrow(estoqueSetor);
 
-            _estoqueSetorRepositorio.Atualizar(estoqueSetor);
+            await _estoqueSetorRepositorio.Atualizar(estoqueSetor);
         }
 
-        public IEnumerable<EstoqueSetor> ObterPorSetorId(int setorId) => _estoqueSetorRepositorio.ObterPorSetorId(setorId);
+        public async Task<IEnumerable<EstoqueSetor>> ObterPorSetorId(int setorId) => await _estoqueSetorRepositorio.ObterPorSetorId(setorId);
 
-        public IEnumerable<EstoqueSetor> ObterPorProdutoId(int produtoId) => _estoqueSetorRepositorio.ObterPorProdutoId(produtoId);
+        public async Task<IEnumerable<EstoqueSetor>> ObterPorProdutoId(int produtoId) => await _estoqueSetorRepositorio.ObterPorProdutoId(produtoId);
 
-        public IEnumerable<EstoqueSetor> ObterTodos() => _estoqueSetorRepositorio.ObterTodos();
+        public async Task<IEnumerable<EstoqueSetor>> ObterTodos() => await _estoqueSetorRepositorio.ObterTodos();
 
-        public EstoqueSetor ObterPorProdutoIdESetorId(int produtoId, int setorId) => _estoqueSetorRepositorio.ObterPorProdutoIdESetorId(produtoId, setorId);
+        public async Task<EstoqueSetor> ObterPorProdutoIdESetorId(int produtoId, int setorId) => await _estoqueSetorRepositorio.ObterPorProdutoIdESetorId(produtoId, setorId);
     }
 }
+

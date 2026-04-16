@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
+      <HintPath>..\packages\BCrypt.Net-Next.4.0.3\lib\net48\BCrypt.Net-Next.dll</HintPath>
+    </Reference>
     <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.11.3.0\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
@@ -52,8 +55,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dtos\LoginDto.cs" />
-    <Compile Include="Dtos\ProdutoDto.cs" />
+    <Compile Include="Dtos\MovimentacaoEstoqueDto.cs" />
+    <Compile Include="Dtos\PaginacaoResultadoDto.cs" />
+    <Compile Include="Dtos\ProdutoAtualizacaoDto.cs" />
+    <Compile Include="Dtos\ProdutoCadastroDto.cs" />
+    <Compile Include="Dtos\ProdutoRetornoDto.cs" />
+    <Compile Include="Dtos\SetorAtualizacaoDto.cs" />
+    <Compile Include="Dtos\SetorCadastroDto.cs" />
+    <Compile Include="Dtos\SetorRetornoDto.cs" />
     <Compile Include="Dtos\TransferenciaProdutoDto.cs" />
+    <Compile Include="Dtos\UsuarioAtualizacaoDto.cs" />
+    <Compile Include="Dtos\UsuarioCadastroDto.cs" />
     <Compile Include="Dtos\UsuarioRetornoDto.cs" />
     <Compile Include="MovimentacaoEstoqueServico.cs" />
     <Compile Include="Interfaces\IMovimentacaoEstoqueServico.cs" />
@@ -68,15 +80,21 @@
     <Compile Include="ProdutoServico.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TipoMovimentacaoServico.cs" />
+    <Compile Include="Mapeamentos\ProdutoMapeamentoExtensions.cs" />
+    <Compile Include="Mapeamentos\UsuarioMapeamentoExtensions.cs" />
+    <Compile Include="Mapeamentos\SetorMapeamentoExtensions.cs" />
+    <Compile Include="Mapeamentos\PaginacaoMapeamentoExtensions.cs" />
     <Compile Include="Validacoes\CpfValidacao.cs" />
     <Compile Include="Validacoes\LoginDtoValidator.cs" />
-    <Compile Include="Validacoes\MovimentacaoEstoqueValidator.cs" />
+    <Compile Include="Validacoes\MovimentacaoEstoqueDtoValidator.cs" />
     <Compile Include="Validacoes\EstoqueSetorValidator.cs" />
-    <Compile Include="Validacoes\ProdutoDtoValidator.cs" />
+    <Compile Include="Validacoes\ProdutoAtualizacaoDtoValidator.cs" />
+    <Compile Include="Validacoes\ProdutoCadastroDtoValidator.cs" />
+    <Compile Include="Validacoes\SetorAtualizacaoDtoValidator.cs" />
+    <Compile Include="Validacoes\SetorCadastroDtoValidator.cs" />
     <Compile Include="Validacoes\TransferenciaProdutoDtoValidator.cs" />
-    <Compile Include="Validacoes\UsuarioValidator.cs" />
-    <Compile Include="Validacoes\SetorValidator.cs" />
-    <Compile Include="Validacoes\ProdutoValidator.cs" />
+    <Compile Include="Validacoes\UsuarioAtualizacaoDtoValidator.cs" />
+    <Compile Include="Validacoes\UsuarioCadastroDtoValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dominio\Dominio.csproj">

@@ -3,6 +3,10 @@ using Servicos.Dtos;
 
 namespace Servicos.Validacoes
 {
+    /// <summary>
+    /// Regras de validação para transferência de produto entre setores.
+    /// Garante que origem e destino sejam diferentes e que a quantidade seja positiva.
+    /// </summary>
     public class TransferenciaProdutoDtoValidator : AbstractValidator<TransferenciaProdutoDto>
     {
         public TransferenciaProdutoDtoValidator()
