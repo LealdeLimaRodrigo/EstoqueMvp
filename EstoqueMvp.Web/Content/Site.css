@@ -10,6 +10,11 @@
     line-height: 1.3;
 }
 
+/* Esconde o conteúdo até confirmar autenticação (evita flash de tela protegida) */
+html.auth-pending body {
+    visibility: hidden;
+}
+
 /* ==========================================
    Navbar Indigo (cor custom que BS não tem)
    ========================================== */
