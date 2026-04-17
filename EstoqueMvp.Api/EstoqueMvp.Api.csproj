@@ -193,7 +193,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="BACKEND.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
