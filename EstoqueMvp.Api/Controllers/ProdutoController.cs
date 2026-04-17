@@ -25,8 +25,14 @@ namespace EstoqueMvp.Api.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null)
+        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null, [FromUri] string busca = null)
         {
+            if (!string.IsNullOrWhiteSpace(busca) && pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
+            {
+                var resultadoBusca = await _produtoServico.BuscarPaginado(busca.Trim(), pagina.Value, tamanhoPagina.Value);
+                return Ok(resultadoBusca);
+            }
+
             if (pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
             {
                 var resultado = await _produtoServico.ObterTodosPaginado(pagina.Value, tamanhoPagina.Value);
@@ -92,10 +98,17 @@ namespace EstoqueMvp.Api.Controllers
         /// </summary>
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Adicionar([FromBody] ProdutoCadastroDto dto)
+        public async Task<IHttpActionResult> Adicionar([FromBody] ProdutoCadastroDto dto, [FromUri] bool forcar = false)
         {
-            int id = await _produtoServico.Adicionar(dto);
-            return Created($"api/produto/{id}", new { Mensagem = "Produto cadastrado com sucesso!", ProdutoId = id });
+            try
+            {
+                int id = await _produtoServico.Adicionar(dto, forcar);
+                return Created($"api/produto/{id}", new { Mensagem = "Produto cadastrado com sucesso!", ProdutoId = id });
+            }
+            catch (Servicos.Exceptions.RegistroInativoException ex)
+            {
+                return Content(System.Net.HttpStatusCode.Conflict, new { Mensagem = ex.Message, Registros = ex.Registros });
+            }
         }
 
         /// <summary>
@@ -130,6 +143,17 @@ namespace EstoqueMvp.Api.Controllers
         public async Task<IHttpActionResult> Restaurar(int id)
         {
             await _produtoServico.Restaurar(id);
+            return Ok(new { Mensagem = "Produto restaurado com sucesso!" });
+        }
+
+        /// <summary>
+        /// Restaura um produto inativo e atualiza seus dados (descrição, preço). Mantém o SKU.
+        /// </summary>
+        [HttpPost]
+        [Route("{id:int}/restaurar")]
+        public async Task<IHttpActionResult> RestaurarComDados(int id, [FromBody] ProdutoCadastroDto dto)
+        {
+            await _produtoServico.RestaurarComDados(id, dto);
             return Ok(new { Mensagem = "Produto restaurado com sucesso!" });
         }
     }

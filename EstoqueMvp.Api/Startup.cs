@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
+using EstoqueMvp.Api.Middleware;
 using Owin;
 using System.Configuration;
 using System.Text;
@@ -16,10 +17,16 @@ namespace EstoqueMvp.Api
     /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Configura a autenticação JWT Bearer via OWIN.
+        /// </summary>
         public void Configuration(IAppBuilder app)
         {
             string chaveSecreta = ConfigurationManager.AppSettings["JwtSecretKey"];
             var key = Encoding.ASCII.GetBytes(chaveSecreta);
+
+            // Extrai JWT do cookie httpOnly e injeta no header Authorization
+            app.Use<CookieJwtMiddleware>();
 
             app.UseJwtBearerAuthentication(new JwtBearerAuthenticationOptions
             {

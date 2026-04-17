@@ -56,6 +56,10 @@
     <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443">
       <HintPath>..\packages\BCrypt.Net-Next.4.0.3\lib\net472\BCrypt.Net-Next.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Http, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.3.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.11.3.0\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
@@ -71,6 +75,9 @@
     <Compile Include="Servicos\SetorServicoTestes.cs" />
     <Compile Include="Servicos\EstoqueSetorServicoTestes.cs" />
     <Compile Include="Servicos\UsuarioServicoTestes.cs" />
+    <Compile Include="Controllers\ProdutoControllerTestes.cs" />
+    <Compile Include="Controllers\MovimentacaoEstoqueControllerTestes.cs" />
+    <Compile Include="Controllers\UsuarioControllerTestes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +89,10 @@
       <Project>{02487574-8371-473B-9882-DCC6B491D50C}</Project>
       <Name>Servicos</Name>
     </ProjectReference>
+      <ProjectReference Include="..\EstoqueMvp.Api\EstoqueMvp.Api.csproj">
+      <Project>{D49F2E85-8061-4492-BBE9-F22247D5D9B9}</Project>
+      <Name>EstoqueMvp.Api</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -90,6 +101,9 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
+
+
+
 
 
 

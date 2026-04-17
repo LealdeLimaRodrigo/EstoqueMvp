@@ -16,6 +16,9 @@ namespace EstoqueMvp.Api.Filters
     /// </summary>
     public class GlobalExceptionFilterAttribute : ExceptionFilterAttribute
     {
+        /// <summary>
+        /// Intercepta exceções não tratadas e retorna respostas HTTP padronizadas.
+        /// </summary>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
             var exception = actionExecutedContext.Exception;

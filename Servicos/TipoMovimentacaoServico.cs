@@ -19,8 +19,14 @@ namespace Servicos
             _tipoMovimentacaoRepositorio = tipoMovimentacaoRepositorio;
         }
 
+        /// <summary>
+        /// Retorna um tipo de movimentação pelo ID.
+        /// </summary>
         public async Task<TipoMovimentacao> ObterPorId(int id) => await _tipoMovimentacaoRepositorio.ObterPorId(id);
 
+        /// <summary>
+        /// Retorna todos os tipos de movimentação cadastrados.
+        /// </summary>
         public async Task<IEnumerable<TipoMovimentacao>> ObterTodos() => await _tipoMovimentacaoRepositorio.ObterTodos();
     }
 }

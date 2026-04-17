@@ -9,6 +9,9 @@ namespace Servicos.Mapeamentos
     /// </summary>
     public static class PaginacaoMapeamentoExtensions
     {
+        /// <summary>
+        /// Converte uma coleção de DTOs em um resultado paginado com metadados.
+        /// </summary>
         public static PaginacaoResultadoDto<TDto> ToPaginacaoDto<TEntity, TDto>(
             this IEnumerable<TDto> itens, 
             int totalRegistros, 

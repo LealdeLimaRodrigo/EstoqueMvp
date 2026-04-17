@@ -28,6 +28,8 @@ namespace Dominio.Interfaces
         /// </summary>
         Task<Usuario> ObterPorIdComSenha(int id);
         Task<IEnumerable<Usuario>> ObterPorNome(string nome);
+        Task<IEnumerable<Usuario>> BuscarPaginado(string termo, int offset, int tamanhoPagina);
+        Task<int> ContarPorBusca(string termo);
         Task<int> Adicionar(Usuario usuario);
         Task Atualizar(Usuario usuario);
         Task Remover(int id);

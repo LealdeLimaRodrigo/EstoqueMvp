@@ -12,6 +12,10 @@ namespace Servicos.Dtos
         public int TotalRegistros { get; set; }
         public int Pagina { get; set; }
         public int TamanhoPagina { get; set; }
+
+        /// <summary>
+        /// Total de páginas calculado com base no total de registros e tamanho da página.
+        /// </summary>
         public int TotalPaginas => TamanhoPagina > 0 ? (int)System.Math.Ceiling((double)TotalRegistros / TamanhoPagina) : 0;
     }
 }

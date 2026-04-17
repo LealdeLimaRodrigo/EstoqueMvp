@@ -12,12 +12,14 @@ namespace Servicos.Interfaces
     {
         Task<IEnumerable<SetorRetornoDto>> ObterTodos();
         Task<PaginacaoResultadoDto<SetorRetornoDto>> ObterTodosPaginado(int pagina, int tamanhoPagina);
+        Task<PaginacaoResultadoDto<SetorRetornoDto>> BuscarPaginado(string termo, int pagina, int tamanhoPagina);
         Task<IEnumerable<SetorRetornoDto>> ObterTodosInativos();
         Task<SetorRetornoDto> ObterPorId(int id);
         Task<IEnumerable<SetorRetornoDto>> ObterPorNome(string nome);
-        Task<int> Adicionar(SetorCadastroDto dto);
+        Task<int> Adicionar(SetorCadastroDto dto, bool ignorarInativos = false);
         Task Atualizar(SetorAtualizacaoDto dto);
         Task Remover(int id);
         Task Restaurar(int id);
+        Task RestaurarComDados(int id, SetorCadastroDto dto);
     }
 }

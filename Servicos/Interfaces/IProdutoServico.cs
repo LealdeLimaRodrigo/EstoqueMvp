@@ -10,15 +10,17 @@ namespace Servicos.Interfaces
     /// </summary>
     public interface IProdutoServico
     {
-        Task<int> Adicionar(ProdutoCadastroDto dto);
+        Task<int> Adicionar(ProdutoCadastroDto dto, bool ignorarInativos = false);
         Task Atualizar(ProdutoAtualizacaoDto dto);
         Task<ProdutoRetornoDto> ObterPorId(int id);
         Task<ProdutoRetornoDto> ObterPorSku(string sku);
         Task<IEnumerable<ProdutoRetornoDto>> ObterPorNome(string nome);
         Task<IEnumerable<ProdutoRetornoDto>> ObterTodos();
         Task<PaginacaoResultadoDto<ProdutoRetornoDto>> ObterTodosPaginado(int pagina, int tamanhoPagina);
+        Task<PaginacaoResultadoDto<ProdutoRetornoDto>> BuscarPaginado(string termo, int pagina, int tamanhoPagina);
         Task<IEnumerable<ProdutoRetornoDto>> ObterTodosInativos();
         Task Remover(int id);
         Task Restaurar(int id);
+        Task RestaurarComDados(int id, ProdutoCadastroDto dto);
     }
 }

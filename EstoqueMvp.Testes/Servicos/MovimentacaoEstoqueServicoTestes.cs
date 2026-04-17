@@ -41,6 +41,9 @@ namespace EstoqueMvp.Testes.Servicos
                 new global::Servicos.Validacoes.TransferenciaProdutoDtoValidator());
         }
 
+        /// <summary>
+        /// Configura mocks de Produto e Setor como ativos e existentes para os testes.
+        /// </summary>
         private void ConfigurarProdutoESetorValidos()
         {
             _mockProdutoRepo.Setup(r => r.ObterPorId(It.IsAny<int>()))

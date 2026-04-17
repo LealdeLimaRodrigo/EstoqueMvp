@@ -22,6 +22,9 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Insere um novo setor e retorna o ID gerado.
+        /// </summary>
         public async Task<int> Adicionar(Setor setor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -34,6 +37,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Atualiza os dados de um setor existente.
+        /// </summary>
         public async Task Atualizar(Setor setor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -45,6 +51,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna um setor pelo ID.
+        /// </summary>
         public async Task<Setor> ObterPorId(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -55,6 +64,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna setores ativos cujo nome contenha o termo informado.
+        /// </summary>
         public async Task<IEnumerable<Setor>> ObterPorNome(string nome)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -64,6 +76,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os setores ativos.
+        /// </summary>
         public async Task<IEnumerable<Setor>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -73,6 +88,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna setores ativos com paginação via OFFSET/FETCH.
+        /// </summary>
         public async Task<IEnumerable<Setor>> ObterTodosPaginado(int offset, int tamanhoPagina)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -83,6 +101,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna a contagem total de setores ativos.
+        /// </summary>
         public async Task<int> ContarTodosAtivos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -92,6 +113,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os setores inativos (soft deleted).
+        /// </summary>
         public async Task<IEnumerable<Setor>> ObterTodosInativos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -101,6 +125,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Realiza o soft delete do setor, marcando como inativo.
+        /// </summary>
         public async Task Remover(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -110,6 +137,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Restaura um setor previamente inativado.
+        /// </summary>
         public async Task Restaurar(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -118,6 +148,32 @@ namespace Dados.Repositorios
                 await db.ExecuteAsync(sql, new { Id = id });
             }
 
+        }
+
+        /// <summary>
+        /// Busca setores ativos por nome com paginação.
+        /// </summary>
+        public async Task<IEnumerable<Setor>> BuscarPaginado(string termo, int offset, int tamanhoPagina)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT Id, Nome, Descricao, Ativo FROM Setor
+                    WHERE Ativo = 1 AND Nome LIKE @Termo
+                    ORDER BY Id OFFSET @Offset ROWS FETCH NEXT @TamanhoPagina ROWS ONLY";
+                return (await db.QueryAsync<Setor>(sql, new { Termo = $"%{termo}%", Offset = offset, TamanhoPagina = tamanhoPagina })).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Retorna a contagem de setores ativos que correspondem ao termo de busca.
+        /// </summary>
+        public async Task<int> ContarPorBusca(string termo)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT COUNT(*) FROM Setor WHERE Ativo = 1 AND Nome LIKE @Termo";
+                return await db.ExecuteScalarAsync<int>(sql, new { Termo = $"%{termo}%" });
+            }
         }
     }
 }

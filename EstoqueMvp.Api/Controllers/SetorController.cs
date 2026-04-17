@@ -25,8 +25,14 @@ namespace EstoqueMvp.Api.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null)
+        public async Task<IHttpActionResult> ObterTodos([FromUri] int? pagina = null, [FromUri] int? tamanhoPagina = null, [FromUri] string busca = null)
         {
+            if (!string.IsNullOrWhiteSpace(busca) && pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
+            {
+                var resultadoBusca = await _setorServico.BuscarPaginado(busca.Trim(), pagina.Value, tamanhoPagina.Value);
+                return Ok(resultadoBusca);
+            }
+
             if (pagina.HasValue && tamanhoPagina.HasValue && pagina > 0 && tamanhoPagina > 0)
             {
                 var resultado = await _setorServico.ObterTodosPaginado(pagina.Value, tamanhoPagina.Value);
@@ -78,10 +84,17 @@ namespace EstoqueMvp.Api.Controllers
         /// </summary>
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Adicionar([FromBody] SetorCadastroDto dto)
+        public async Task<IHttpActionResult> Adicionar([FromBody] SetorCadastroDto dto, [FromUri] bool forcar = false)
         {
-            int id = await _setorServico.Adicionar(dto);
-            return Created($"api/setor/{id}", new { Mensagem = "Setor cadastrado com sucesso!", SetorId = id });
+            try
+            {
+                int id = await _setorServico.Adicionar(dto, forcar);
+                return Created($"api/setor/{id}", new { Mensagem = "Setor cadastrado com sucesso!", SetorId = id });
+            }
+            catch (Servicos.Exceptions.RegistroInativoException ex)
+            {
+                return Content(System.Net.HttpStatusCode.Conflict, new { Mensagem = ex.Message, Registros = ex.Registros });
+            }
         }
 
         /// <summary>
@@ -115,6 +128,17 @@ namespace EstoqueMvp.Api.Controllers
         public async Task<IHttpActionResult> Restaurar(int id)
         {
             await _setorServico.Restaurar(id);
+            return Ok(new { Mensagem = "Setor restaurado com sucesso!" });
+        }
+
+        /// <summary>
+        /// Restaura um setor inativo e atualiza seu nome.
+        /// </summary>
+        [HttpPost]
+        [Route("{id:int}/restaurar")]
+        public async Task<IHttpActionResult> RestaurarComDados(int id, [FromBody] SetorCadastroDto dto)
+        {
+            await _setorServico.RestaurarComDados(id, dto);
             return Ok(new { Mensagem = "Setor restaurado com sucesso!" });
         }
     }

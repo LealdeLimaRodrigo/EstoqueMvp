@@ -9,6 +9,9 @@ namespace Servicos.Mapeamentos
     /// </summary>
     public static class SetorMapeamentoExtensions
     {
+        /// <summary>
+        /// Converte a entidade Setor para o DTO de retorno.
+        /// </summary>
         public static SetorRetornoDto ToRetornoDto(this Setor setor)
         {
             if (setor == null) return null;
@@ -22,6 +25,9 @@ namespace Servicos.Mapeamentos
             };
         }
 
+        /// <summary>
+        /// Converte o DTO de cadastro para a entidade Setor.
+        /// </summary>
         public static Setor ToEntity(this SetorCadastroDto dto)
         {
             return new Setor
@@ -31,6 +37,9 @@ namespace Servicos.Mapeamentos
             };
         }
 
+        /// <summary>
+        /// Aplica os dados do DTO de atualização na entidade existente.
+        /// </summary>
         public static void AplicarAtualizacao(this Setor setor, SetorAtualizacaoDto dto)
         {
             setor.Nome = dto.Nome;

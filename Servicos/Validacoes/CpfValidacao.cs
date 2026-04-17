@@ -8,6 +8,10 @@ namespace Servicos.Validacoes
     /// </summary>
     public static class CpfValidacao
     {
+        /// <summary>
+        /// Valida um CPF usando o algoritmo oficial dos dígitos verificadores.
+        /// Aceita CPF com ou sem formatação.
+        /// </summary>
         public static bool ValidarCpf(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) 
@@ -38,6 +42,9 @@ namespace Servicos.Validacoes
             return cpf.EndsWith(digito1.ToString() + digito2.ToString());
         }
 
+        /// <summary>
+        /// Remove caracteres não numéricos do CPF (pontos, traço).
+        /// </summary>
         public static string LimparCpf(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return cpf;

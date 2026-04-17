@@ -23,6 +23,9 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Insere um novo usuário e retorna o ID gerado.
+        /// </summary>
         public async Task<int> Adicionar(Usuario usuario)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -35,6 +38,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Atualiza os dados de um usuário existente, incluindo SenhaHash.
+        /// </summary>
         public async Task Atualizar(Usuario usuario)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -46,6 +52,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna um usuário pelo ID. Não inclui SenhaHash.
+        /// </summary>
         public async Task<Usuario> ObterPorId(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -57,6 +66,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna um usuário pelo CPF. Não inclui SenhaHash.
+        /// </summary>
         public async Task<Usuario> ObterPorCpf(string cpf)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -96,6 +108,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna usuários ativos cujo nome contenha o termo informado.
+        /// </summary>
         public async Task<IEnumerable<Usuario>> ObterPorNome(string nome)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -105,6 +120,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os usuários ativos.
+        /// </summary>
         public async Task<IEnumerable<Usuario>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -114,6 +132,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna usuários ativos com paginação via OFFSET/FETCH.
+        /// </summary>
         public async Task<IEnumerable<Usuario>> ObterTodosPaginado(int offset, int tamanhoPagina)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -124,6 +145,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna a contagem total de usuários ativos.
+        /// </summary>
         public async Task<int> ContarTodosAtivos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -133,6 +157,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os usuários inativos (soft deleted).
+        /// </summary>
         public async Task<IEnumerable<Usuario>> ObterTodosInativos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -142,6 +169,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Realiza o soft delete do usuário, marcando como inativo.
+        /// </summary>
         public async Task Remover(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -151,12 +181,41 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Restaura um usuário previamente inativado.
+        /// </summary>
         public async Task Restaurar(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 string sql = @"UPDATE Usuario SET Ativo = 1 WHERE Id = @Id";
                 await db.ExecuteAsync(sql, new { Id = id });
+            }
+        }
+
+        /// <summary>
+        /// Busca usuários ativos por nome ou CPF com paginação.
+        /// </summary>
+        public async Task<IEnumerable<Usuario>> BuscarPaginado(string termo, int offset, int tamanhoPagina)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT Id, Nome, Cpf, Ativo FROM Usuario
+                    WHERE Ativo = 1 AND (Nome LIKE @Termo OR Cpf LIKE @Termo)
+                    ORDER BY Id OFFSET @Offset ROWS FETCH NEXT @TamanhoPagina ROWS ONLY";
+                return (await db.QueryAsync<Usuario>(sql, new { Termo = $"%{termo}%", Offset = offset, TamanhoPagina = tamanhoPagina })).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Retorna a contagem de usuários ativos que correspondem ao termo de busca.
+        /// </summary>
+        public async Task<int> ContarPorBusca(string termo)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                string sql = @"SELECT COUNT(*) FROM Usuario WHERE Ativo = 1 AND (Nome LIKE @Termo OR Cpf LIKE @Termo)";
+                return await db.ExecuteScalarAsync<int>(sql, new { Termo = $"%{termo}%" });
             }
         }
 

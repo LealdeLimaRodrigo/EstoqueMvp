@@ -1,0 +1,118 @@
+@{
+    ViewBag.Title = "Movimentações de Estoque";
+}
+
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+    <h2><i class="fas fa-exchange-alt"></i> Histórico de Movimentações</h2>
+    <div class="d-flex flex-wrap align-items-center gap-2">
+        <div class="d-inline-flex flex-wrap gap-1">
+            <button class="btn btn-success" id="btnEntrada" aria-label="Registrar entrada de produto"><i class="fas fa-plus me-1"></i>Entrada</button>
+            <button class="btn btn-danger" id="btnConsumo" aria-label="Registrar consumo de produto"><i class="fas fa-minus me-1"></i>Consumo</button>
+            <button class="btn btn-primary" id="btnTransferencia" aria-label="Transferir produto entre setores"><i class="fas fa-sync me-1"></i>Transferência</button>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" id="btnExportarCsv" title="Exportar para CSV" aria-label="Exportar movimentações para CSV"><i class="fas fa-file-csv me-1"></i>CSV</button>
+    </div>
+</div>
+
+<div class="card rounded-4 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+            <div class="input-group search-box">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" id="buscaMovimentacao" class="form-control" placeholder="Buscar produto, setor..." aria-label="Buscar movimentações">
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-1">
+                <button class="btn btn-xs btn-outline-secondary filtro-tipo active" data-tipo="" title="Todos">Todos</button>
+                <button class="btn btn-xs btn-outline-success filtro-tipo" data-tipo="ENTRADA" title="Entradas"><i class="fas fa-arrow-down"></i></button>
+                <button class="btn btn-xs btn-outline-danger filtro-tipo" data-tipo="CONSUMO" title="Consumos"><i class="fas fa-arrow-up"></i></button>
+                <button class="btn btn-xs btn-outline-info filtro-tipo" data-tipo="ENVIO" title="Envios"><i class="fas fa-paper-plane"></i></button>
+                <button class="btn btn-xs btn-outline-primary filtro-tipo" data-tipo="RECEBIMENTO" title="Recebimentos"><i class="fas fa-inbox"></i></button>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <label for="filtroDataInicio" class="form-label mb-0 small text-muted text-nowrap">De:</label>
+                <input type="date" id="filtroDataInicio" class="form-control form-control-sm" style="width: auto;" aria-label="Data inicial">
+                <label for="filtroDataFim" class="form-label mb-0 small text-muted text-nowrap">Até:</label>
+                <input type="date" id="filtroDataFim" class="form-control form-control-sm" style="width: auto;" aria-label="Data final">
+                <button class="btn btn-sm btn-outline-secondary text-nowrap" id="btnLimparDatas" title="Limpar filtro de datas"><i class="fas fa-times"></i></button>
+            </div>
+            <small id="totalMovInfo" class="text-muted"></small>
+        </div>
+        <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle" id="tabelaMovimentacoes">
+            <thead class="table-light">
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Setor</th>
+                    <th>Responsável</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody aria-live="polite">
+            </tbody>
+        </table>
+        </div>
+        <div id="paginacaoMovimentacoes" class="mt-2"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMovimentacao" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div id="headerModal" class="modal-header navbar-indigo text-white">
+                <h5 class="modal-title" id="tituloModal">Registrar</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formMov">
+                    <input type="hidden" id="tipoMovimentacao">
+                    <div class="mb-3">
+                        <label for="selProduto" class="form-label">Produto</label>
+                        <select id="selProduto" class="form-select" required aria-describedby="selProdutoFeedback"></select>
+                        <div class="invalid-feedback" id="selProdutoFeedback">Selecione um produto.</div>
+                    </div>
+                    <div id="divSaldoAtual" class="mb-3 d-none">
+                        <div class="alert alert-info py-2 px-3 small mb-0">
+                            <div class="d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#collapseEstoqueSetor" role="button" aria-expanded="false" aria-controls="collapseEstoqueSetor" style="cursor:pointer;">
+                                <span><i class="fas fa-info-circle me-1"></i>Saldo total: <strong id="lblSaldoAtual">0</strong> unidade(s)</span>
+                                <i class="fas fa-chevron-down fa-xs" id="iconCollapseEstoque"></i>
+                            </div>
+                            <div class="collapse mt-2" id="collapseEstoqueSetor">
+                                <table class="table table-sm table-borderless mb-0 small">
+                                    <thead><tr><th>Setor</th><th class="text-end">Qtd</th></tr></thead>
+                                    <tbody id="tbodyEstoqueSetor"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divOrigem" class="mb-3 d-none">
+                        <label for="selOrigem" class="form-label">Setor de Origem</label>
+                        <select id="selOrigem" class="form-select"></select>
+                    </div>
+                    <div id="divTransferArrow" class="text-center text-info fs-4 py-1 d-none">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div id="divDestino" class="mb-3 d-none">
+                        <label for="selDestino" class="form-label">Setor de Destino</label>
+                        <select id="selDestino" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numQtd" class="form-label">Quantidade</label>
+                        <input type="number" id="numQtd" class="form-control" min="1" required aria-describedby="numQtdFeedback">
+                        <div class="invalid-feedback" id="numQtdFeedback">Informe uma quantidade válida.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnConfirmar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @System.Web.Optimization.Scripts.Render("~/bundles/movimentacao")
+}
