@@ -13,6 +13,12 @@
 // ==========================================
 var paginaAtual = window.location.pathname.toLowerCase();
 var estaNoLogin = paginaAtual.includes('/login');
+
+// Esconder conteúdo até confirmar autenticação (evita flash de tela protegida)
+if (!estaNoLogin) {
+    document.documentElement.classList.add('auth-pending');
+}
+
 // Autenticação via cookie httpOnly: o JWT é enviado automaticamente pelo navegador.
 // O frontend não armazena token no localStorage.
 // Rotas protegidas retornam 401 se não autenticado.
@@ -25,11 +31,19 @@ var estaNoLogin = paginaAtual.includes('/login');
 
 axios.interceptors.response.use(function (response) { return response; }, function (error) {
     if (error.response && error.response.status === 401 && !estaNoLogin) {
-        // Redireciona para login se não autenticado (e não está no login)
         window.location.href = '/Login';
     }
     return Promise.reject(error);
 });
+
+// Verificação rápida de autenticação para desbloquear a tela
+if (!estaNoLogin) {
+    axios.get(API_URL + '/usuario/perfil').then(function () {
+        document.documentElement.classList.remove('auth-pending');
+    }).catch(function () {
+        window.location.href = '/Login';
+    });
+} 
 
 // ==========================================
 // 4. LOGOUT
