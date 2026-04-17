@@ -15,6 +15,8 @@ namespace Dominio.Interfaces
         Task<IEnumerable<Setor>> ObterTodosInativos();
         Task<Setor> ObterPorId(int id);
         Task<IEnumerable<Setor>> ObterPorNome(string nome);
+        Task<IEnumerable<Setor>> BuscarPaginado(string termo, int offset, int tamanhoPagina);
+        Task<int> ContarPorBusca(string termo);
         Task<int> Adicionar(Setor setor);
         Task Atualizar(Setor setor);
         Task Remover(int id);

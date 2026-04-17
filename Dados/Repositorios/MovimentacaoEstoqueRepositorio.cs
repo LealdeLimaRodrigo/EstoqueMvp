@@ -23,6 +23,9 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Insere um registro de movimentação de estoque e retorna o ID gerado.
+        /// </summary>
         public async Task<int> Adicionar(MovimentacaoEstoque movimentacaoEstoque)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -35,6 +38,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações de um dia específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorData(DateTime data)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -46,6 +52,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações de um produto específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorProdutoId(int produtoId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -55,6 +64,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações de um setor específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorSetorId(int setorId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -64,6 +76,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações de um tipo específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorTipoMovimentacaoId(int tipoMovimentacaoId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -73,6 +88,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações vinculadas a uma transação (ex: transferência).
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorTransacaoId(Guid transacaoId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -82,6 +100,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna movimentações realizadas por um usuário específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorUsuarioId(int usuarioId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -91,6 +112,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todas as movimentações de estoque registradas.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))

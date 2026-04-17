@@ -17,6 +17,8 @@ namespace Dominio.Interfaces
         Task<Produto> ObterPorId(int id);
         Task<Produto> ObterPorSku(string sku);
         Task<IEnumerable<Produto>> ObterPorNome(string nome);
+        Task<IEnumerable<Produto>> BuscarPaginado(string termo, int offset, int tamanhoPagina);
+        Task<int> ContarPorBusca(string termo);
         Task<int> Adicionar(Produto produto);
         Task Atualizar(Produto produto);
         Task Remover(int id);

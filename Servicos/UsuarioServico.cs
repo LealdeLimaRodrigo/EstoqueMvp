@@ -2,6 +2,7 @@ using Dominio.Entidades;
 using Dominio.Interfaces;
 using FluentValidation;
 using Servicos.Dtos;
+using Servicos.Exceptions;
 using Servicos.Interfaces;
 using Servicos.Validacoes;
 using Servicos.Mapeamentos;
@@ -56,14 +57,21 @@ namespace Servicos
         /// <summary>
         /// Cadastra um novo usuário. Valida unicidade do CPF e aplica hash BCrypt na senha.
         /// </summary>
-        public async Task<int> Adicionar(UsuarioCadastroDto dto)
+        public async Task<int> Adicionar(UsuarioCadastroDto dto, bool ignorarInativos = false)
         {
             _cadastroValidator.ValidateAndThrow(dto);
 
             string cpfLimpo = CpfValidacao.LimparCpf(dto.Cpf);
 
-            if (await _usuarioRepositorio.ObterPorCpf(cpfLimpo) != null)
-                throw new InvalidOperationException("Já existe um usuário com este CPF.");
+            var existente = await _usuarioRepositorio.ObterPorCpf(cpfLimpo);
+            if (existente != null)
+            {
+                if (!existente.Ativo && !ignorarInativos)
+                    throw new UsuarioInativoException("Já existe um usuário inativo com este CPF.", existente.Id, existente.Nome, existente.Cpf);
+
+                if (existente.Ativo)
+                    throw new InvalidOperationException("Já existe um usuário com este CPF.");
+            }
 
             var usuario = dto.ToEntity(cpfLimpo, BCrypt.Net.BCrypt.HashPassword(dto.Senha));
 
@@ -135,12 +143,37 @@ namespace Servicos
             await _usuarioRepositorio.Restaurar(id);
         }
 
+        /// <summary>
+        /// Restaura um usuário inativo e atualiza seus dados (nome, senha).
+        /// </summary>
+        public async Task RestaurarComDados(int id, UsuarioCadastroDto dto)
+        {
+            var usuario = await _usuarioRepositorio.ObterPorIdComSenha(id);
+
+            if (usuario == null)
+                throw new KeyNotFoundException("Usuário não encontrado.");
+
+            usuario.Nome = dto.Nome;
+            usuario.Ativo = true;
+
+            if (!string.IsNullOrWhiteSpace(dto.Senha))
+                usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
+
+            await _usuarioRepositorio.Atualizar(usuario);
+        }
+
+        /// <summary>
+        /// Retorna um usuário pelo ID.
+        /// </summary>
         public async Task<UsuarioRetornoDto> ObterPorId(int id)
         {
             var usuario = await _usuarioRepositorio.ObterPorId(id);
             return MapearParaDto(usuario);
         }
 
+        /// <summary>
+        /// Retorna todos os usuários ativos.
+        /// </summary>
         public async Task<IEnumerable<UsuarioRetornoDto>> ObterTodos()
         {
             var usuarios = await _usuarioRepositorio.ObterTodos();
@@ -159,18 +192,39 @@ namespace Servicos
             return itens.Select(MapearParaDto).ToPaginacaoDto<Usuario, UsuarioRetornoDto>(total, pagina, tamanhoPagina);
         }
 
+        /// <summary>
+        /// Busca usuários por termo com paginação server-side.
+        /// </summary>
+        public async Task<PaginacaoResultadoDto<UsuarioRetornoDto>> BuscarPaginado(string termo, int pagina, int tamanhoPagina)
+        {
+            int offset = (pagina - 1) * tamanhoPagina;
+            var itens = await _usuarioRepositorio.BuscarPaginado(termo, offset, tamanhoPagina);
+            var total = await _usuarioRepositorio.ContarPorBusca(termo);
+
+            return itens.Select(MapearParaDto).ToPaginacaoDto<Usuario, UsuarioRetornoDto>(total, pagina, tamanhoPagina);
+        }
+
+        /// <summary>
+        /// Retorna todos os usuários inativos.
+        /// </summary>
         public async Task<IEnumerable<UsuarioRetornoDto>> ObterTodosInativos()
         {
             var usuarios = await _usuarioRepositorio.ObterTodosInativos();
             return usuarios.Select(MapearParaDto);
         }
 
+        /// <summary>
+        /// Retorna um usuário pelo CPF.
+        /// </summary>
         public async Task<UsuarioRetornoDto> ObterPorCpf(string cpf)
         {
             var usuario = await _usuarioRepositorio.ObterPorCpf(cpf);
             return MapearParaDto(usuario);
         }
 
+        /// <summary>
+        /// Retorna usuários cujo nome contenha o termo informado.
+        /// </summary>
         public async Task<IEnumerable<UsuarioRetornoDto>> ObterPorNome(string nome)
         {
             var usuarios = await _usuarioRepositorio.ObterPorNome(nome);

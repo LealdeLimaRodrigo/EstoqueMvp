@@ -4,7 +4,6 @@ using Dominio.Interfaces;
 using FluentValidation;
 using Servicos.Dtos;
 using Servicos.Interfaces;
-using Servicos.Validacoes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -192,18 +191,39 @@ namespace Servicos
             });
         }
 
+        /// <summary>
+        /// Retorna movimentações filtradas por setor.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorSetorId(int setorId) => await _movimentacaoEstoqueRepositorio.ObterPorSetorId(setorId);
 
+        /// <summary>
+        /// Retorna movimentações filtradas por produto.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorProdutoId(int produtoId) => await _movimentacaoEstoqueRepositorio.ObterPorProdutoId(produtoId);
 
+        /// <summary>
+        /// Retorna todas as movimentações de estoque registradas.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterTodos() => await _movimentacaoEstoqueRepositorio.ObterTodos();
 
+        /// <summary>
+        /// Retorna movimentações realizadas por um usuário específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorUsuarioId(int usuarioId) => await _movimentacaoEstoqueRepositorio.ObterPorUsuarioId(usuarioId);
 
+        /// <summary>
+        /// Retorna movimentações filtradas por tipo.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorTipoMovimentacaoId(int tipoMovimentacaoId) => await _movimentacaoEstoqueRepositorio.ObterPorTipoMovimentacaoId(tipoMovimentacaoId);
 
+        /// <summary>
+        /// Retorna movimentações de um dia específico.
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorData(DateTime data) => await _movimentacaoEstoqueRepositorio.ObterPorData(data);
 
+        /// <summary>
+        /// Retorna movimentações vinculadas a uma transação (ex: transferência).
+        /// </summary>
         public async Task<IEnumerable<MovimentacaoEstoque>> ObterPorTransacaoId(Guid transacaoId) => await _movimentacaoEstoqueRepositorio.ObterPorTransacaoId(transacaoId);
     }
 }

@@ -1,0 +1,33 @@
+@{
+    ViewBag.Title = "Login";
+    ViewBag.HideNavbar = true;
+}
+
+<div class="row justify-content-center align-items-center flex-grow-1">
+    <div class="col-11 col-sm-8 col-md-5 col-lg-4">
+        <div class="card rounded-4 shadow">
+            <div class="card-header navbar-indigo text-white text-center py-3">
+                <h4 class="mb-0"><i class="fas fa-lock me-1"></i> Acesso Restrito</h4>
+            </div>
+            <div class="card-body p-4">
+                <div id="alertErro" class="alert alert-danger d-none" role="alert"></div>
+
+                <div class="mb-3">
+                    <label for="inputCpf" class="form-label">CPF</label>
+                    <input type="text" id="inputCpf" class="form-control" placeholder="000.000.000-00" maxlength="14" autocomplete="username" aria-describedby="cpfHelp">
+                    <div id="cpfHelp" class="form-text">Digite os 11 dígitos do seu CPF.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="inputSenha" class="form-label">Senha</label>
+                    <input type="password" id="inputSenha" class="form-control" placeholder="Digite sua senha" autocomplete="current-password" aria-describedby="senhaHelp">
+                    <div id="senhaHelp" class="form-text">Informe a senha cadastrada.</div>
+                </div>
+                <button class="btn navbar-indigo text-white w-100" id="btnLogin">Entrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @System.Web.Optimization.Scripts.Render("~/bundles/login")
+}

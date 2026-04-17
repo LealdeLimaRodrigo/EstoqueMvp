@@ -1,12 +1,12 @@
 <Solution>
   <Folder Name="/Solution Items/">
-    <File Path="Criar_EstoqueMvp.sql" />
     <File Path="README.md" />
     <File Path="Scripts/Criar_EstoqueMvp.sql" />
-  </Folder>
+  </Folder>\n
   <Project Path="Dados/Dados.csproj" Id="3b88d6f3-176d-4546-a2ec-c32961c2ed6b" />
   <Project Path="Dominio/Dominio.csproj" Id="9e9e79b6-a44f-4856-a6be-55b3ec4585a7" />
   <Project Path="EstoqueMvp.Api/EstoqueMvp.Api.csproj" Id="d49f2e85-8061-4492-bbe9-f22247d5d9b9" />
+  <Project Path="EstoqueMvp.Testes/EstoqueMvp.Testes.csproj" Id="b1a2c3d4-e5f6-7890-abcd-ef1234567890" />
   <Project Path="EstoqueMvp.Web/EstoqueMvp.Web.csproj" Id="48cef54d-b533-405c-b318-c92483ee5b2f" />
   <Project Path="Servicos/Servicos.csproj" Id="02487574-8371-473b-9882-dcc6b491d50c" />
-  <Project Path="EstoqueMvp.Testes/EstoqueMvp.Testes.csproj" Id="b1a2c3d4-e5f6-7890-abcd-ef1234567890" />\n</Solution>
+</Solution>

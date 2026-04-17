@@ -67,6 +67,8 @@
     <Compile Include="Dtos\UsuarioAtualizacaoDto.cs" />
     <Compile Include="Dtos\UsuarioCadastroDto.cs" />
     <Compile Include="Dtos\UsuarioRetornoDto.cs" />
+    <Compile Include="Exceptions\RegistroInativoException.cs" />
+    <Compile Include="Exceptions\UsuarioInativoException.cs" />
     <Compile Include="MovimentacaoEstoqueServico.cs" />
     <Compile Include="Interfaces\IMovimentacaoEstoqueServico.cs" />
     <Compile Include="Interfaces\IEstoqueSetorServico.cs" />

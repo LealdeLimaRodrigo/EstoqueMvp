@@ -1,20 +1,267 @@
-﻿/* Set padding to keep content from hitting the edges */
-.body-content {
-    margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+﻿/* ==========================================
+   Estoque MVP — Estilos Mínimos
+   Usa Bootstrap 5.3 nativo ao máximo.
+   Apenas o que o BS não cobre está aqui.
+   ========================================== */
+
+.btn-xs {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    line-height: 1.3;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+/* ==========================================
+   Navbar Indigo (cor custom que BS não tem)
+   ========================================== */
+.navbar-indigo {
+    background-color: #4F46E5 !important;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+/* ==========================================
+   Tabelas — cabeçalho uppercase (estilo BS
+   não faz isso nativamente)
+   ========================================== */
+.table thead th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ==========================================
+   <code> — usar cor neutra em vez do rosa
+   padrão do Bootstrap
+   ========================================== */
+code {
+    color: var(--bs-emphasis-color);
+}
+
+/* ==========================================
+   Cards — hover com sombra elevada
+   ========================================== */
+.card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: var(--bs-box-shadow) !important;
+}
+
+/* ==========================================
+   Cards clicáveis (drilldown do Dashboard)
+   ========================================== */
+.card-clickable {
+    cursor: pointer;
+    position: relative;
+}
+
+.card-clickable::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transition: background-color 0.15s;
+}
+
+.card-clickable:hover::after {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-bs-theme="dark"] .card-clickable:hover::after {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ==========================================
+   Sidebar — cores e layout
+   Usa offcanvas-lg do Bootstrap 5.3:
+   - mobile (<992px): offcanvas overlay
+   - desktop (≥992px): fixa à esquerda
+   ========================================== */
+.sidebar-indigo {
+    background-color: #3F37C9 !important;
+    width: 220px !important;
+}
+
+@media (min-width: 992px) {
+    .sidebar-indigo {
+        position: fixed;
+        top: 52px; /* abaixo do topbar */
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+    }
+
+    .content-with-sidebar {
+        margin-left: 220px;
+    }
+}
+
+.sidebar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.65rem 1.25rem;
+    border-left: 3px solid transparent;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav .nav-link.active {
+    color: #fff;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: #fff;
+}
+
+/* ==========================================
+   Breadcrumbs customizados
+   ========================================== */
+.breadcrumb {
+    --bs-breadcrumb-divider: '›';
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    font-size: 0.85rem;
+}
+
+.breadcrumb a {
+    color: #4F46E5;
+}
+
+[data-bs-theme="dark"] .breadcrumb a {
+    color: #a5b4fc;
+}
+
+/* ==========================================
+   Paginação com cor primária Indigo
+   (BS usa --bs-primary que não overridamos
+   globalmente, então pintamos a paginação)
+   ========================================== */
+.pagination .page-link {
+    color: #4F46E5;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4F46E5;
+    border-color: #4F46E5;
+}
+
+/* ==========================================
+   Barra de busca — largura máxima
+   ========================================== */
+.search-box {
+    max-width: 300px;
+}
+
+@media (max-width: 768px) {
+    .search-box {
+        max-width: 100%;
+    }
+}
+
+/* ==========================================
+   Botão toggle dark mode (circular custom)
+   ========================================== */
+.btn-theme-toggle {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.15s;
+}
+
+.btn-theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* ==========================================
+   Focus visível para acessibilidade
+   ========================================== */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+    outline: 2px solid #4F46E5;
+    outline-offset: 2px;
+}
+
+/* ==========================================
+   Acessibilidade — prefers-reduced-motion
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .btn-theme-toggle,
+    .card-clickable::after,
+    .sidebar-nav .nav-link {
+        transition: none !important;
+    }
+
+    .fa-spin {
+        animation: none !important;
+    }
+}
+
+/* ==========================================
+   Skip Navigation Link (a11y)
+   ========================================== */
+.skip-link {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #4F46E5;
+    color: #fff;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.skip-link:focus {
+    opacity: 1;
+    pointer-events: auto;
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+}
+
+/* ==========================================
+   Empty State — ilustração visual
+   ========================================== */
+.empty-state {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    opacity: 0.35;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state-text {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-action {
+    margin-top: 0.75rem;
+}
+
+/* ==========================================
+   Unsaved changes indicator (dot on modal title)
+   ========================================== */
+.form-dirty .modal-title::after {
+    content: ' •';
+    color: #f59e0b;
+    font-weight: bold;
 }

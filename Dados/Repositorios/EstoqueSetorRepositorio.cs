@@ -22,6 +22,9 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Insere um novo registro de estoque por setor.
+        /// </summary>
         public async Task<int> Adicionar(EstoqueSetor estoqueSetor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -34,6 +37,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Atualiza a quantidade de estoque de um produto em um setor.
+        /// </summary>
         public async Task Atualizar(EstoqueSetor estoqueSetor)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -45,6 +51,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna os registros de estoque de um produto em todos os setores.
+        /// </summary>
         public async Task<IEnumerable<EstoqueSetor>> ObterPorProdutoId(int produtoId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -54,6 +63,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna o registro de estoque de um produto em um setor específico.
+        /// </summary>
         public async Task<EstoqueSetor> ObterPorProdutoIdESetorId(int produtoId, int setorId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -64,6 +76,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna os registros de estoque de todos os produtos em um setor.
+        /// </summary>
         public async Task<IEnumerable<EstoqueSetor>> ObterPorSetorId(int setorId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -73,6 +88,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os registros de estoque por setor.
+        /// </summary>
         public async Task<IEnumerable<EstoqueSetor>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))

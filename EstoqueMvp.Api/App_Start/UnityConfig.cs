@@ -20,6 +20,9 @@ namespace EstoqueMvp.Api
 	/// </summary>
 	public static class UnityConfig
 	{
+		/// <summary>
+		/// Registra todos os repositórios, serviços e validators no container de DI.
+		/// </summary>
 		public static void RegisterComponents()
 		{
 			var container = new UnityContainer();
@@ -35,18 +38,18 @@ namespace EstoqueMvp.Api
 			container.RegisterType<ITipoMovimentacaoRepositorio, TipoMovimentacaoRepositorio>(new InjectionConstructor(connectionString));
 
 			// Validators (FluentValidation)
-container.RegisterType<IValidator<ProdutoCadastroDto>, ProdutoCadastroDtoValidator>();
-container.RegisterType<IValidator<ProdutoAtualizacaoDto>, ProdutoAtualizacaoDtoValidator>();
-container.RegisterType<IValidator<LoginDto>, LoginDtoValidator>();
-container.RegisterType<IValidator<UsuarioCadastroDto>, UsuarioCadastroDtoValidator>();
-container.RegisterType<IValidator<UsuarioAtualizacaoDto>, UsuarioAtualizacaoDtoValidator>();
-container.RegisterType<IValidator<SetorCadastroDto>, SetorCadastroDtoValidator>();
-container.RegisterType<IValidator<SetorAtualizacaoDto>, SetorAtualizacaoDtoValidator>();
-container.RegisterType<IValidator<EstoqueSetor>, EstoqueSetorValidator>();
-container.RegisterType<IValidator<MovimentacaoEstoqueDto>, MovimentacaoEstoqueDtoValidator>();
-container.RegisterType<IValidator<TransferenciaProdutoDto>, TransferenciaProdutoDtoValidator>();
+			container.RegisterType<IValidator<ProdutoCadastroDto>, ProdutoCadastroDtoValidator>();
+			container.RegisterType<IValidator<ProdutoAtualizacaoDto>, ProdutoAtualizacaoDtoValidator>();
+			container.RegisterType<IValidator<LoginDto>, LoginDtoValidator>();
+			container.RegisterType<IValidator<UsuarioCadastroDto>, UsuarioCadastroDtoValidator>();
+			container.RegisterType<IValidator<UsuarioAtualizacaoDto>, UsuarioAtualizacaoDtoValidator>();
+			container.RegisterType<IValidator<SetorCadastroDto>, SetorCadastroDtoValidator>();
+			container.RegisterType<IValidator<SetorAtualizacaoDto>, SetorAtualizacaoDtoValidator>();
+			container.RegisterType<IValidator<EstoqueSetor>, EstoqueSetorValidator>();
+			container.RegisterType<IValidator<MovimentacaoEstoqueDto>, MovimentacaoEstoqueDtoValidator>();
+			container.RegisterType<IValidator<TransferenciaProdutoDto>, TransferenciaProdutoDtoValidator>();
 
-// Serviços// Serviços: resolvidos automaticamente pelo container via interfaces de repositório
+			// Serviços: resolvidos automaticamente pelo container via interfaces de repositório
 			container.RegisterType<IProdutoServico, ProdutoServico>();
 			container.RegisterType<IUsuarioServico, UsuarioServico>();
 			container.RegisterType<ITipoMovimentacaoServico, TipoMovimentacaoServico>();

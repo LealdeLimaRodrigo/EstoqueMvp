@@ -22,6 +22,9 @@ namespace Dados.Repositorios
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Retorna um tipo de movimentação pelo ID.
+        /// </summary>
         public async Task<TipoMovimentacao> ObterPorId(int id)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
@@ -32,6 +35,9 @@ namespace Dados.Repositorios
             }
         }
 
+        /// <summary>
+        /// Retorna todos os tipos de movimentação cadastrados.
+        /// </summary>
         public async Task<IEnumerable<TipoMovimentacao>> ObterTodos()
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
