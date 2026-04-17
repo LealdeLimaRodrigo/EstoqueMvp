@@ -62,7 +62,7 @@ EstoqueMvp.slnx
 - **.NET Framework 4.8** SDK
 
 ### 2. Banco de Dados
-1. Localize o arquivo **`Scripts/Criar_EstoqueMvp.sql`** na raiz do repositório.
+1. Localize o arquivo **`Criar_EstoqueMvp.sql`** na raiz do repositório.
 2. Execute-o no SQL Server Management Studio (SSMS) ou Azure Data Studio.
 3. O script cria o banco `EstoqueMvp`, todas as tabelas (com PKs, FKs, CHECKs, índices) e insere dados iniciais:
    - 4 Tipos de Movimentação (Entrada, Consumo, Envio, Recebimento)
@@ -120,7 +120,7 @@ No projeto **`EstoqueMvp.Web`**, edite o `Web.config`:
 | Transferência entre Setores | ✅ | TransactionScope atômico, TransacaoId compartilhado |
 | Impedir estoque negativo | ✅ | Validação server-side antes de debitar |
 | Registro de movimentações | ✅ | Tabela append-only com tipo, data, usuário, transação |
-| Script SQL de criação | ✅ | `Scripts/Criar_EstoqueMvp.sql` na raiz |
+| Script SQL de criação | ✅ | `Criar_EstoqueMvp.sql` na raiz |
 | Separação de responsabilidades | ✅ | 5 camadas (Domínio, Dados, Serviços, API, Web) |
 | SQL com FKs e tipos adequados | ✅ | PKs, FKs, CHECKs, índices, IDENTITY |
 | Proteção contra SQL Injection | ✅ | 100% queries parametrizadas (Dapper) |
@@ -163,14 +163,6 @@ O projeto `EstoqueMvp.Testes` contém **98 testes unitários**:
 **Executar:** Abra o **Test Explorer** no Visual Studio e clique em **Run All**.
 
 ---
-
-## 📖 Documentação Detalhada
-
-| Documento | Descrição |
-|---|---|
-| [`EstoqueMvp.Api/BACKEND.md`](EstoqueMvp.Api/BACKEND.md) | Arquitetura backend, padrões, decisões |
-| [`EstoqueMvp.Web/FRONTEND.md`](EstoqueMvp.Web/FRONTEND.md) | Arquitetura frontend, módulos JS, UX |
-| [`DECISOES_TECNICAS.md`](DECISOES_TECNICAS.md) | Todas as decisões técnicas e guia de entrevista |
 
 ---
 
