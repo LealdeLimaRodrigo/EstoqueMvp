@@ -20,6 +20,43 @@ Para facilitar a avaliação, o sistema foi publicado na nuvem (Azure). Sinta-se
 
 ---
 
+## ⚠️ Nota sobre Disponibilidade (19/04/2026 — 21/04/2026)
+
+> **Para o avaliador:** a aplicação em produção ficou **indisponível entre 19/04/2026 às ~17h e 21/04/2026 às 18h** devido a um problema externo, completamente alheio ao código entregue.
+
+### O que aconteceu?
+
+O `_Layout.cshtml` carregava o axios diretamente do CDN **sem fixar a versão**:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+        integrity="sha384-hmTjheSx+Ma2rUsS28gIvcS5PL+YagfURozh9RBnC1eenF5bKVWNrDV+Ix8q2zGv"
+        crossorigin="anonymous"></script>
+```
+
+Em **19/04/2026 às 17:07 UTC**, o pacote **axios 1.15.1** foi publicado no npm. O jsDelivr atualizou o arquivo servido nessa URL, alterando o conteúdo e **invalidando o hash SHA-384 (SRI — Subresource Integrity)**. O browser bloqueou o script, impedindo o login.
+
+Adicionalmente, o arquivo de fallback local (`/Scripts/lib/axios.min.js`) **nunca existiu no repositório**, fazendo a segunda tentativa também falhar com HTTP 404.
+
+### Linha do tempo
+
+| Data/Hora | Evento |
+|---|---|
+| 17/04/2026 15:49 | ✅ Entrega do desafio — aplicação funcionando |
+| 19/04/2026 17:07 | ❌ `axios 1.15.1` publicado — hash SRI inválido — app quebrou |
+| 21/04/2026 18:06 | ✅ Correção aplicada e deploy realizado |
+
+### Correções aplicadas neste fix
+
+- Versão do axios **fixada** em `axios@1.6.2` na URL do CDN (estável, sem SRI volátil)
+- Arquivos de fallback `Scripts/lib/axios.min.js` e `Scripts/lib/bootstrap.bundle.min.js` **criados e incluídos no projeto**
+- **CSP** (`Content-Security-Policy`) corrigida: removida referência a `localhost` desnecessária em produção
+- Origem CORS `https://estoquemvp-web.azurewebsites.net` adicionada à API
+
+A aplicação está **funcionando normalmente** desde 21/04/2026 às 18h.
+
+---
+
 ## 🚀 Como Executar Localmente (Passo a Passo)
 
 Caso deseje rodar a aplicação em seu ambiente local, siga as instruções abaixo:
