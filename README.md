@@ -1,6 +1,8 @@
 # 📦 Sistema de Gestão de Estoque (MVP)
 
-Solução Full Stack desenvolvida em **ASP.NET 4.8** para o desafio técnico de Desenvolvedor. O sistema realiza o gerenciamento de inventário, controle de movimentações entre setores e autenticação de usuários. 
+> **⚠️ Nota ao avaliador:** a aplicação estava funcionando corretamente na data de entrega do desafio **(17/04/2026)**. No entanto, por não ter sido especificada a versão do axios na URL do CDN, a biblioteca foi atualizada automaticamente pelo jsDelivr em **19/04/2026**, invalidando o hash de integridade (SRI) configurado e derrubando o login da aplicação. O problema foi identificado e corrigido em **21/04/2026** com a simples adição de `@1.15.0` à URL do CDN, versão que estava vigente na data da entrega. A versão foi fixada para que o MVP possa ser avaliado corretamente.
+
+Solução Full Stack desenvolvida em **ASP.NET 4.8**
 
 A arquitetura foi desenhada com foco em **separação de responsabilidades, integridade de dados e alta performance**, utilizando Dapper, JWT e cobertura de testes unitários.
 
