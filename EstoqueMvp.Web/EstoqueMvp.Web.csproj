@@ -135,6 +135,8 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\lib\axios.min.js" />
+    <Content Include="Scripts\lib\bootstrap.bundle.min.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\core\api.js" />
     <Content Include="Scripts\core\constants.js" />
